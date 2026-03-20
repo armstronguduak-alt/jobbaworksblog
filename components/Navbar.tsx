@@ -43,14 +43,22 @@ const Navbar: React.FC = () => {
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-emerald-50 py-4 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-          <img 
-            src="/logo.png" 
-            alt="JobbaWorks Logo" 
-            className="w-8 h-8 rounded object-cover"
-          />
-          <span className="hidden sm:inline"><span className="text-emerald-600">Jobba</span><span className="text-black">Works</span></span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 -ml-2 text-slate-500 hover:text-emerald-600 transition-colors"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <Link to="/" className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+            <img 
+              src="/logo.png" 
+              alt="JobbaWorks Logo" 
+              className="w-8 h-8 rounded object-cover"
+            />
+            <span className="hidden sm:inline"><span className="text-emerald-600">Jobba</span><span className="text-black">Works</span></span>
+          </Link>
+        </div>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
           <Link to="/" className="hover:text-emerald-600 transition-colors">Home</Link>
@@ -144,12 +152,7 @@ const Navbar: React.FC = () => {
             </>
           )}
 
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-slate-500 hover:text-emerald-600 transition-colors ml-1"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+
         </div>
       </div>
 
