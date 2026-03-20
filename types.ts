@@ -124,6 +124,7 @@ export interface Post {
   featuredImage: string;
   publishDate: string;
   readingTime: string;
+  readingTimeSeconds?: number;
   comments: PostComment[];
   status: PostStatus;
   trending?: boolean;

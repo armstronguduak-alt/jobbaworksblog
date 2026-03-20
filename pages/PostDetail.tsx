@@ -49,7 +49,7 @@ const PostDetail: React.FC = () => {
 
   useEffect(() => {
     if (user && activeChapter && !hasReadingReward && !readingLimitReached) {
-      setTimeLeft(25);
+      setTimeLeft(post?.readingTimeSeconds || 25);
       setIsTimerActive(true);
     } else {
       setIsTimerActive(false);
@@ -58,7 +58,7 @@ const PostDetail: React.FC = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [activeChapterIndex, user, hasReadingReward, readingLimitReached, activeChapter]);
+  }, [activeChapterIndex, user, hasReadingReward, readingLimitReached, activeChapter, post?.readingTimeSeconds]);
 
   useEffect(() => {
     if (isTimerActive && timeLeft > 0) {
@@ -124,7 +124,8 @@ const PostDetail: React.FC = () => {
     }
   };
 
-  const progress = ((25 - timeLeft) / 25) * 100;
+  const targetTime = post?.readingTimeSeconds || 25;
+  const progress = ((targetTime - timeLeft) / targetTime) * 100;
 
   return (
     <div className="bg-white min-h-screen pb-20">
@@ -168,7 +169,14 @@ const PostDetail: React.FC = () => {
           )}
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-8 serif-text">{post.title}</h1>
+        <h1 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-6 serif-text">{post.title}</h1>
+        <div className="flex items-center gap-3 mb-8">
+            <img src={post.author.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(post.author.name)}`} alt={post.author.name} className="w-10 h-10 rounded-full border border-slate-100 shadow-sm" />
+            <div>
+               <p className="font-bold text-slate-900 leading-tight">{post.author.name}</p>
+               <p className="text-xs text-slate-500 font-medium">{post.publishDate} • {post.readingTime}</p>
+            </div>
+        </div>
 
         {post.isStory ? (
           <>

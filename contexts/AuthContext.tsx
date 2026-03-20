@@ -37,7 +37,7 @@ interface AuthContextType {
     details?: Record<string, string | undefined>
   ) => Promise<{ success: boolean; message: string }>;
   savePost: (postData: Partial<Post>) => Promise<void>;
-  updatePostStatus: (postId: string, status: PostStatus, category?: string) => Promise<void>;
+  updatePostStatus: (postId: string, status: PostStatus, category?: string, readingTimeSeconds?: number) => Promise<void>;
   manageUserStatus: (userId: string, status: UserStatus) => Promise<void>;
   updateSystemPlan: (planId: PlanId, updates: Partial<SubscriptionPlan>) => Promise<void>;
   categories: string[];
@@ -201,7 +201,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         category: categoryMap.get(p.category_id) || 'Uncategorized',
         featuredImage: p.featured_image || 'https://picsum.photos/1200/600',
         publishDate: formatHumanDate(p.published_at || p.created_at),
-        readingTime: `${Math.max(1, Math.round((Number(p.reading_time_seconds || 60) || 60) / 60))} min read`,
+        readingTime: `${Math.max(1, Math.round((Number(p.reading_time_seconds || 25) || 25) / 60))} min read`,
+        readingTimeSeconds: Number(p.reading_time_seconds || 25),
         comments: rowComments.map((c: any) => ({
           id: c.id,
           authorId: c.user_id,
@@ -769,7 +770,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await hydratePosts(user.id, user.role);
   };
 
-  const updatePostStatus = async (postId: string, status: PostStatus, category?: string) => {
+  const updatePostStatus = async (postId: string, status: PostStatus, category?: string, readingTimeSeconds?: number) => {
     if (!user) return;
 
     let categoryId: string | null = null;
@@ -785,10 +786,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       published_at: status === 'approved' ? new Date().toISOString() : null,
     };
 
+    if (readingTimeSeconds) {
+       updates.reading_time_seconds = readingTimeSeconds;
+    }
+
     if (categoryId) updates.category_id = categoryId;
 
     const { error } = await db.from('posts').update(updates).eq('id', postId);
     if (error) throw error;
+
+    if (status === 'approved') {
+       try {
+         await addReward('post_approval', postId, 500);
+         const postItem = posts.find(p => p.id === postId);
+         if (postItem && postItem.authorId) {
+            await db.from('notifications').insert({
+               user_id: postItem.authorId,
+               type: 'approval',
+               message: `Your article "${postItem.title}" has been approved! You earned a ₦500 bonus.`
+            });
+         }
+       } catch (err) {
+         console.error('Failed to issue approval reward/notification:', err);
+       }
+    }
 
     await hydratePosts(user.id, user.role);
   };

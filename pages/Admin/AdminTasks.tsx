@@ -141,37 +141,58 @@ const AdminTasks: React.FC = () => {
         </form>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {loading ? <p>Loading tasks...</p> : tasks.map(task => (
-           <div key={task.id} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex items-start gap-4">
-              <div className="w-12 h-12 bg-slate-50 text-slate-600 rounded-2xl flex items-center justify-center shrink-0">
-                <Target size={24} />
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-start">
-                  <h4 className="font-black text-slate-900">{task.title}</h4>
-                  <span className={`px-2 py-1 text-[10px] uppercase font-black tracking-widest rounded-md ${task.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
-                    {task.status}
-                  </span>
-                </div>
-                <p className="text-sm text-slate-500 mt-1">{task.description}</p>
-                <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-bold">
-                  <span className="text-emerald-600 border border-emerald-100 bg-emerald-50 px-2 py-1 rounded-md">Reward: ₦{task.reward_amount.toLocaleString()}</span>
-                  <span className="text-slate-500 border border-slate-200 bg-slate-50 px-2 py-1 rounded-md">Target: {task.target_count} {task.task_type}</span>
-                  <span className="text-indigo-600 border border-indigo-100 bg-indigo-50 px-2 py-1 rounded-md">Plan: {task.required_plan}</span>
-                  <span className="text-amber-600 border border-amber-100 bg-amber-50 px-2 py-1 rounded-md">Time: {task.duration_hours}h</span>
-                  {task.affiliate_url && (
-                    <span className="text-sky-600 border border-sky-100 bg-sky-50 px-2 py-1 rounded-md max-w-[150px] truncate">
-                      URL: {task.affiliate_url}
+      <div className="bg-white border border-slate-100 shadow-sm rounded-2xl overflow-hidden mt-8 max-w-full overflow-x-auto">
+        {loading ? (
+          <p className="p-8 text-slate-500">Loading tasks...</p>
+        ) : (
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-100 text-xs font-black uppercase tracking-widest text-slate-500">
+                <th className="px-6 py-4">Task Details</th>
+                <th className="px-6 py-4">Type/Target</th>
+                <th className="px-6 py-4">Reward</th>
+                <th className="px-6 py-4">Plan / Time</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {tasks.map((task) => (
+                <tr key={task.id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="font-bold text-slate-900 mb-1">{task.title}</div>
+                    <div className="text-xs text-slate-500 truncate max-w-[200px]">{task.description}</div>
+                    {task.affiliate_url && (
+                      <div className="text-[10px] text-sky-600 mt-1 truncate max-w-[200px] bg-sky-50 px-2 py-0.5 rounded-full inline-block">
+                        {task.affiliate_url}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 font-medium text-slate-700 text-sm">
+                    {task.target_count} <span className="uppercase text-[10px] font-black tracking-widest text-slate-400">{task.task_type}</span>
+                  </td>
+                  <td className="px-6 py-4 font-black text-emerald-600">
+                    ₦{task.reward_amount.toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 text-xs font-semibold text-slate-600">
+                    <span className="block mb-1"><span className="text-indigo-600">Plan:</span> {task.required_plan}</span>
+                    <span className="block"><span className="text-amber-600">Dur:</span> {task.duration_hours}h</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 text-[10px] uppercase font-black tracking-widest rounded-md ${task.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                      {task.status}
                     </span>
-                  )}
-                </div>
-              </div>
-              <button onClick={() => handleDelete(task.id)} className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg">
-                <Trash2 size={16} />
-              </button>
-           </div>
-        ))}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button onClick={() => handleDelete(task.id)} className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg">
+                      <Trash2 size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

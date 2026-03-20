@@ -12,9 +12,11 @@ import {
   MessageSquare,
   Sparkles,
   Target,
-  ArrowRight
+  ArrowRight,
+  Bell
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../src/integrations/supabase/client';
 
 
 const DashboardHome: React.FC = () => {
@@ -28,6 +30,27 @@ const DashboardHome: React.FC = () => {
   const planEarnings = user?.planEarnings || 0;
   const capPercent = plan && plan.monthlyReturnCap > 0 ? Math.min((planEarnings / plan.monthlyReturnCap) * 100, 100) : 0;
   const withdrawalEligible = plan && stats.referrals >= plan.minReferrals && stats.totalEarnings > 0 && (stats.postsReadToday > 0 || stats.commentsMadeToday > 0);
+
+  const [notifications, setNotifications] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (user) {
+      supabase.from('notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5)
+        .then(({ data }) => {
+          if (data) setNotifications(data);
+        });
+    }
+  }, [user]);
+
+  const markNotificationRead = async (id: string, isRead: boolean) => {
+    if (isRead) return;
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    await supabase.from('notifications').update({ is_read: true }).eq('id', id);
+  };
 
   const copyRefCode = () => {
     if (user?.referralCode) {
@@ -158,6 +181,35 @@ const DashboardHome: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      {notifications.length > 0 && (
+        <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
+          <h3 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+            <Bell size={20} className="text-indigo-600" /> Notifications
+          </h3>
+          <div className="space-y-4">
+            {notifications.map((notif) => (
+              <div 
+                key={notif.id} 
+                onClick={() => markNotificationRead(notif.id, notif.is_read)}
+                className={`p-4 rounded-xl border transition-all cursor-pointer ${notif.is_read ? 'bg-slate-50 border-slate-100 opacity-70' : 'bg-indigo-50 border-indigo-100'}`}
+              >
+                <div className="flex justify-between items-start gap-4">
+                  <div>
+                    <span className={`text-[10px] font-black uppercase tracking-widest mb-1 block ${notif.is_read ? 'text-slate-500' : 'text-indigo-600'}`}>
+                      {notif.type}
+                    </span>
+                    <p className={`text-sm ${notif.is_read ? 'text-slate-600 font-medium' : 'text-slate-900 font-bold'}`}>
+                      {notif.message}
+                    </p>
+                  </div>
+                  {!notif.is_read && <div className="w-2 h-2 rounded-full bg-indigo-500 shrink-0 mt-1"></div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Secondary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

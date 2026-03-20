@@ -22,6 +22,7 @@ const AdminModeration: React.FC = () => {
   const [generatorCategory, setGeneratorCategory] = useState<string>('Technology');
   const [generatorTopic, setGeneratorTopic] = useState<string>(BLOG_TOPIC_IDEAS.Technology[0]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [readingTimes, setReadingTimes] = useState<Record<string, number>>({});
 
   const filteredPosts = useMemo(() => {
     if (activeTab === 'all') return posts;
@@ -30,7 +31,8 @@ const AdminModeration: React.FC = () => {
 
   const handleStatus = async (id: string, status: 'approved' | 'rejected' | 'draft') => {
     const category = selectedCategories[id];
-    await updatePostStatus(id, status, category);
+    const rTime = readingTimes[id] || 25;
+    await updatePostStatus(id, status, category, rTime);
   };
 
   const handleDelete = async (id: string) => {
@@ -144,7 +146,7 @@ const AdminModeration: React.FC = () => {
               </div>
 
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex flex-wrap items-center gap-3 mb-3">
                   <select
                     value={selectedCategories[post.id] || post.category}
                     onChange={(e) => handleCategoryChange(post.id, e.target.value)}
@@ -156,7 +158,17 @@ const AdminModeration: React.FC = () => {
                       </option>
                     ))}
                   </select>
-                  <span className="text-xs text-slate-400 font-medium">{post.publishDate}</span>
+                  <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
+                    Read Time (s)
+                    <input 
+                      type="number" 
+                      min="5" 
+                      className="w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" 
+                      value={readingTimes[post.id] ?? (post.readingTimeSeconds || 25)}
+                      onChange={e => setReadingTimes(prev => ({...prev, [post.id]: Number(e.target.value)}))}
+                    />
+                  </label>
+                  <span className="text-xs text-slate-400 font-medium ml-auto">{post.publishDate}</span>
                 </div>
 
                 <h3 className="text-2xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors mb-3 leading-tight">{post.title}</h3>
