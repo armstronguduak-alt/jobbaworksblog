@@ -130,7 +130,45 @@ const Referrals: React.FC = () => {
           <p className="text-xs text-slate-500 mt-1">Live referral and commission data from Supabase</p>
         </div>
 
-        <div className="w-full overflow-x-auto no-scrollbar pb-2">
+        <div className="md:hidden divide-y divide-slate-100 p-4">
+          {stats.referralList.map((ref) => (
+            <div key={ref.id} className="py-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-bold text-slate-900">{ref.name} {ref.username && <span className="text-slate-400 font-normal text-xs">@{ref.username}</span>}</p>
+                  <p className="text-[10px] text-slate-400 uppercase">{ref.planId || 'free'} plan</p>
+                </div>
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                  ref.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
+                }`}>
+                  {ref.status === 'active' ? <CheckCircle2 size={11} /> : <Clock size={11} />}
+                  {ref.status}
+                </span>
+              </div>
+              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                <div className="text-center">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Plan</p>
+                  <p className="text-sm font-semibold text-slate-600">₦{Number(ref.planPrice || 0).toFixed(0)}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Expected</p>
+                  <p className="text-sm font-black text-emerald-600">₦{Number(ref.expectedCommission || 0).toFixed(0)}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Earned</p>
+                  <p className="text-sm font-black text-emerald-600">₦{(Number(ref.rewardEarned) || 0).toFixed(0)}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+          {stats.referralList.length === 0 && (
+            <div className="py-12 text-center text-slate-400 text-sm italic">
+              You haven't referred anyone yet. Start sharing to earn.
+            </div>
+          )}
+        </div>
+
+        <div className="hidden md:block w-full overflow-x-auto no-scrollbar pb-2">
           <table className="w-full text-left min-w-[700px]">
             <thead className="bg-slate-50/50">
               <tr>
@@ -147,7 +185,7 @@ const Referrals: React.FC = () => {
                 <tr key={ref.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-5">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">{ref.name}</p>
+                      <p className="text-sm font-bold text-slate-900">{ref.name} {ref.username && <span className="text-slate-400 font-normal text-xs">@{ref.username}</span>}</p>
                       <p className="text-[10px] text-slate-400 uppercase">{ref.planId || 'free'} plan</p>
                     </div>
                   </td>

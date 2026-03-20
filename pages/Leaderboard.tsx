@@ -141,38 +141,38 @@ const Leaderboard: React.FC = () => {
       )}
 
       {topUsers.length >= 3 && (
-        <div className="flex overflow-x-auto snap-x md:grid md:grid-cols-3 gap-6 items-end pt-10 pb-8 px-4 -mx-4 md:pb-0 md:px-0 md:mx-0 no-scrollbar">
-          <div className="order-2 md:order-1 bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 text-center relative min-w-[260px] snap-center shrink-0">
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center border-4 border-white shadow-lg">
-              <Medal className="text-slate-400" size={24} />
+        <div className="flex justify-center items-end gap-2 md:gap-6 pt-10 pb-8 px-2 md:px-0 w-full overflow-hidden">
+          <div className="relative w-1/3 bg-white rounded-2xl md:rounded-[2.5rem] p-3 md:p-8 border border-slate-100 shadow-xl text-center flex flex-col items-center justify-end">
+            <div className="absolute -top-4 md:-top-6 w-8 h-8 md:w-12 md:h-12 bg-slate-100 rounded-xl md:rounded-2xl flex items-center justify-center border-2 md:border-4 border-white shadow-lg">
+              <Medal className="text-slate-400 w-4 h-4 md:w-6 md:h-6" />
             </div>
-            <div className="w-20 h-20 rounded-3xl bg-slate-50 mx-auto mb-4 border-4 border-white shadow-inner overflow-hidden">
+            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-3xl bg-slate-50 mb-2 md:mb-4 border-2 md:border-4 border-white shadow-inner overflow-hidden">
               <img src={topUsers[1].avatar} alt="" className="w-full h-full object-cover" />
             </div>
-            <h3 className="text-lg font-black text-slate-900">{topUsers[1].name}</h3>
-            <p className="text-emerald-600 font-black text-xl mt-2">₦{topUsers[1].earnings.toLocaleString()}</p>
+            <h3 className="text-[10px] md:text-lg font-black text-slate-900 line-clamp-1 break-all">{topUsers[1].name}</h3>
+            <p className="text-emerald-600 font-black text-xs md:text-xl md:mt-2">₦{topUsers[1].earnings.toLocaleString()}</p>
           </div>
 
-          <div className="order-1 md:order-2 bg-slate-900 rounded-[3rem] p-10 text-center relative transform md:scale-110 shadow-2xl shadow-slate-900/40 z-10 min-w-[280px] snap-center shrink-0">
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-amber-400 rounded-3xl flex items-center justify-center border-4 border-slate-900 shadow-xl">
-              <Crown className="text-slate-900" size={32} />
+          <div className="relative w-[38%] bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-4 md:p-10 text-center shadow-2xl z-10 md:scale-110 flex flex-col items-center justify-end -translate-y-4">
+            <div className="absolute -top-6 md:-top-8 w-12 h-12 md:w-16 md:h-16 bg-amber-400 rounded-xl md:rounded-3xl flex items-center justify-center border-2 md:border-4 border-slate-900 shadow-xl">
+              <Crown className="text-slate-900 w-6 h-6 md:w-8 md:h-8" />
             </div>
-            <div className="w-24 h-24 rounded-[2rem] bg-white/10 mx-auto mb-6 border-4 border-white/20 shadow-inner overflow-hidden">
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-2xl md:rounded-[2rem] bg-white/10 mb-2 md:mb-6 border-2 md:border-4 border-white/20 shadow-inner overflow-hidden">
               <img src={topUsers[0].avatar} alt="" className="w-full h-full object-cover" />
             </div>
-            <h3 className="text-xl font-black text-white">{topUsers[0].name}</h3>
-            <p className="text-emerald-400 font-black text-2xl mt-2">₦{topUsers[0].earnings.toLocaleString()}</p>
+            <h3 className="text-xs md:text-xl font-black text-white line-clamp-1 break-all">{topUsers[0].name}</h3>
+            <p className="text-emerald-400 font-black text-sm md:text-2xl md:mt-2">₦{topUsers[0].earnings.toLocaleString()}</p>
           </div>
 
-          <div className="order-3 bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 text-center relative min-w-[260px] snap-center shrink-0">
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center border-4 border-white shadow-lg">
-              <Trophy className="text-orange-400" size={24} />
+          <div className="relative w-1/3 bg-white rounded-2xl md:rounded-[2.5rem] p-3 md:p-8 border border-slate-100 shadow-xl text-center flex flex-col items-center justify-end">
+            <div className="absolute -top-4 md:-top-6 w-8 h-8 md:w-12 md:h-12 bg-orange-50 rounded-xl md:rounded-2xl flex items-center justify-center border-2 md:border-4 border-white shadow-lg">
+              <Trophy className="text-orange-400 w-4 h-4 md:w-6 md:h-6" />
             </div>
-            <div className="w-20 h-20 rounded-3xl bg-slate-50 mx-auto mb-4 border-4 border-white shadow-inner overflow-hidden">
+            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-3xl bg-slate-50 mb-2 md:mb-4 border-2 md:border-4 border-white shadow-inner overflow-hidden">
               <img src={topUsers[2].avatar} alt="" className="w-full h-full object-cover" />
             </div>
-            <h3 className="text-lg font-black text-slate-900">{topUsers[2].name}</h3>
-            <p className="text-emerald-600 font-black text-xl mt-2">₦{topUsers[2].earnings.toLocaleString()}</p>
+            <h3 className="text-[10px] md:text-lg font-black text-slate-900 line-clamp-1 break-all">{topUsers[2].name}</h3>
+            <p className="text-emerald-600 font-black text-xs md:text-xl md:mt-2">₦{topUsers[2].earnings.toLocaleString()}</p>
           </div>
         </div>
       )}

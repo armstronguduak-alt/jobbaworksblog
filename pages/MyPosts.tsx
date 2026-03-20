@@ -11,11 +11,13 @@ import {
   Eye,
   Search,
   PenLine,
+  Gift,
 } from 'lucide-react';
 import { PostStatus } from '../types';
 
 const MyPosts: React.FC = () => {
-  const { posts, user } = useAuth();
+  const { posts, user, addReward, systemPlans } = useAuth();
+  const [isClaiming, setIsClaiming] = useState<string | null>(null);
   const [filter, setFilter] = useState<PostStatus | 'all'>('all');
   const navigate = useNavigate();
 
@@ -115,6 +117,23 @@ const MyPosts: React.FC = () => {
                 <span className="text-xs text-slate-500 font-medium">{post.publishDate}</span>
               </div>
               <div className="flex items-center justify-end gap-2">
+                {post.status === 'approved' && !post.authorEarningsClaimed && (
+                  <button 
+                    disabled={isClaiming === post.id}
+                    onClick={async () => {
+                      setIsClaiming(post.id);
+                      // Provide standard reward, e.g. 500 NGN or plan reading * 10 
+                      const res = await addReward('post_approval', post.id, 500);
+                      setIsClaiming(null);
+                      if (res.success) alert(res.message);
+                      else alert(res.message);
+                    }}
+                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all flex items-center gap-1 text-[10px] font-black uppercase" 
+                    title="Claim Reward"
+                  >
+                    {isClaiming === post.id ? '...' : <Gift size={18} />}
+                  </button>
+                )}
                 <button onClick={() => navigate(`/post/${post.slug}`)} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="View Article">
                   <Eye size={18} />
                 </button>
@@ -162,6 +181,22 @@ const MyPosts: React.FC = () => {
                   <td className="px-6 py-5 text-center text-xs text-slate-500 font-medium">{post.publishDate}</td>
                   <td className="px-6 py-5 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      {post.status === 'approved' && !post.authorEarningsClaimed && (
+                        <button 
+                          disabled={isClaiming === post.id}
+                          onClick={async () => {
+                            setIsClaiming(post.id);
+                            const res = await addReward('post_approval', post.id, 500);
+                            setIsClaiming(null);
+                            if (res.success) alert(res.message);
+                            else alert(res.message);
+                          }}
+                          className="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
+                          title="Claim Post Reward"
+                        >
+                          {isClaiming === post.id ? 'Claiming...' : <><Gift size={14} /> Claim</>}
+                        </button>
+                      )}
                       <button onClick={() => navigate(`/post/${post.slug}`)} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="View Article">
                         <Eye size={18} />
                       </button>

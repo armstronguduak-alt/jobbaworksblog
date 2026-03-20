@@ -33,6 +33,7 @@ export interface ReferralEntry {
   id: string;
   userId: string;
   name: string;
+  username: string;
   date: string;
   status: 'registered' | 'active' | 'inactive';
   rewardEarned: number;
@@ -72,6 +73,7 @@ export interface AuthUser {
   referralCode: string;
   completedReadingPosts: string[];
   completedCommentPosts: string[];
+  claimedAuthorPosts: string[];
   lastLimitModalDate?: string;
   planStartedAt?: string;
   planEarnings?: number;
@@ -127,6 +129,7 @@ export interface Post {
   trending?: boolean;
   isHighValue?: boolean;
   aiModeration?: AiModerationResult | null;
+  authorEarningsClaimed?: boolean;
   isStory?: boolean;
 }
 

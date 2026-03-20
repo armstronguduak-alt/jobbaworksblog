@@ -329,7 +329,7 @@ const CreatePost: React.FC = () => {
           {importError && <p className="text-xs text-rose-600 mt-3 font-semibold">{importError}</p>}
         </div>
 
-        <div className="flex items-center gap-1 mb-6 p-1 bg-slate-50 rounded-2xl w-fit overflow-x-auto no-scrollbar max-w-full">
+        <div className="flex flex-wrap items-center gap-1 mb-6 p-2 bg-slate-50 rounded-2xl w-full">
           <button onClick={() => editor?.chain().focus().toggleBold().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('bold') ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><Bold size={18} /></button>
           <button onClick={() => editor?.chain().focus().toggleItalic().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('italic') ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><Italic size={18} /></button>
           <div className="w-px h-6 bg-slate-200 mx-1" />

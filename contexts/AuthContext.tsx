@@ -23,7 +23,7 @@ interface AuthContextType {
   systemPlans: Record<PlanId, SubscriptionPlan>;
   allUsers: AuthUser[];
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, phone: string, refCode?: string) => Promise<void>;
+  register: (name: string, username: string, gender: string, email: string, password: string, phone: string, refCode?: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   addReward: (type: 'reading' | 'comment' | 'post_approval', key: string, customAmount?: number) => Promise<{ success: boolean; message: string }>;
@@ -213,6 +213,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         trending: false,
         isHighValue: false,
         isStory: p.is_story || false,
+        authorEarningsClaimed: p.author_earnings_claimed || false,
         aiModeration: p.moderation_summary
           ? {
               grammarScore: 90,
@@ -287,11 +288,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const referredIds = referralRows.map((r: any) => r.referred_user_id);
 
     const [referredProfilesRes, referredSubsRes] = await Promise.all([
-      referredIds.length ? db.from('profiles').select('user_id,name').in('user_id', referredIds) : Promise.resolve({ data: [] }),
+      referredIds.length ? db.from('profiles').select('user_id,name,username').in('user_id', referredIds) : Promise.resolve({ data: [] }),
       referredIds.length ? db.from('user_subscriptions').select('user_id,plan_id').in('user_id', referredIds) : Promise.resolve({ data: [] }),
     ]);
 
     const referredNameMap = new Map((referredProfilesRes.data || []).map((p: any) => [p.user_id, p.name]));
+    const referredUsernameMap = new Map((referredProfilesRes.data || []).map((p: any) => [p.user_id, p.username || '']));
     const referredPlanMap = new Map((referredSubsRes.data || []).map((s: any) => [s.user_id, s.plan_id as PlanId]));
 
     const commissionByUser = new Map<string, number>();
@@ -306,6 +308,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: r.id,
         userId: r.referred_user_id,
         name: referredNameMap.get(r.referred_user_id) || 'Referred User',
+        username: referredUsernameMap.get(r.referred_user_id) || '',
         date: new Date(r.created_at).toISOString().split('T')[0],
         status: planId !== 'free' ? 'active' : 'registered',
         rewardEarned: commissionByUser.get(r.referred_user_id) || 0,
@@ -338,6 +341,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       referralCode: profileRes.data.referral_code,
       completedReadingPosts: (postReadsRes.data || []).map((r: any) => r.post_id),
       completedCommentPosts: (commentEarningsRes.data || []).map((r: any) => r.post_id),
+      claimedAuthorPosts: [],
       lastLimitModalDate: undefined,
       planStartedAt: subscriptionRes.data?.started_at ? new Date(subscriptionRes.data.started_at).toISOString().split('T')[0] : getTodayDate(),
       planEarnings: Number(subscriptionRes.data?.plan_earnings || walletRes.data?.total_earnings || 0),
@@ -393,6 +397,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           referralCode: p.referral_code,
           completedReadingPosts: [],
           completedCommentPosts: [],
+          claimedAuthorPosts: [],
         }))
       );
     } else {
@@ -423,6 +428,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       referralCode: '',
       completedReadingPosts: [],
       completedCommentPosts: [],
+      claimedAuthorPosts: [],
     };
   };
 
@@ -432,6 +438,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const safeName = (metadata.name || fallbackName).toString();
     const safeEmail = (sessionUser?.email || '').toString();
     const safePhone = (metadata.phone || '').toString();
+    const safeUsername = (metadata.username || '').toString();
+    const safeGender = (metadata.gender || '').toString();
     const safeAvatar = (metadata.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(safeName)}`).toString();
     const referredByCode = (metadata.referred_by_code || '').toString();
 
@@ -439,6 +447,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       _name: safeName,
       _email: safeEmail,
       _phone: safePhone,
+      _username: safeUsername || null,
+      _gender: safeGender || null,
       _avatar_url: safeAvatar,
       _referred_by_code: referredByCode || null,
     });
@@ -620,9 +630,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (name: string, email: string, password: string, phone: string, refCode?: string) => {
+  const register = async (name: string, username: string, gender: string, email: string, password: string, phone: string, refCode?: string) => {
     const normalizedCode = refCode?.trim().toUpperCase() || null;
-    const avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
+    const avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(username || name)}`;
 
     const { data, error } = await db.auth.signUp({
       email: email.trim().toLowerCase(),
@@ -631,6 +641,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         emailRedirectTo: window.location.origin,
         data: {
           name,
+          username: username.toLowerCase().trim(),
+          gender,
           phone,
           avatar_url: avatar,
           referred_by_code: normalizedCode,
@@ -682,7 +694,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) return { success: false, message: error.message || 'Failed to issue approval reward.' };
+      
+      const { error: postError } = await db.from('posts').update({ author_earnings_claimed: true }).eq('id', key);
+      if (postError) console.error('Failed marking post as claimed', postError);
+
       await hydrateUserAndStats(user.id);
+      await hydratePosts();
       return { success: true, message: `₦${customAmount} earned for post approval` };
     }
 

@@ -22,7 +22,8 @@ import {
   CreditCard,
   Menu,
   X,
-  Target
+  Target,
+  Home
 } from 'lucide-react';
 import CommunityModal, { CommunityChannel } from './CommunityModal';
 
@@ -230,7 +231,11 @@ const DashboardLayout: React.FC = () => {
                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">System Online</span>
             </div>
             
-            <button className="p-2.5 text-slate-500 hover:bg-slate-50 rounded-2xl transition-all relative">
+            <Link to="/" className="md:hidden p-2.5 text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all border border-emerald-100" title="Go Home">
+              <Home size={20} />
+            </Link>
+            
+            <button className="hidden md:flex p-2.5 text-slate-500 hover:bg-slate-50 rounded-2xl transition-all relative">
               <Bell size={20} />
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-emerald-500 rounded-full border-2 border-white"></span>
             </button>

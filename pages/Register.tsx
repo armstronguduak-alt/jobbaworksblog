@@ -15,6 +15,10 @@ const Register: React.FC = () => {
   const [referrerName, setReferrerName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [username, setUsername] = useState('');
+  const [gender, setGender] = useState('');
+  const [checkingUsername, setCheckingUsername] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -37,13 +41,41 @@ const Register: React.FC = () => {
     fetchReferrer();
   }, [referralCode]);
 
+  useEffect(() => {
+    if (username.trim().length < 3) {
+      setUsernameAvailable(null);
+      return;
+    }
+    const checkUsername = async () => {
+      setCheckingUsername(true);
+      const cleanUsername = username.trim().toLowerCase();
+      const { data, error } = await (supabase as any)
+        .from('profiles')
+        .select('username')
+        .eq('username', cleanUsername)
+        .maybeSingle();
+
+      setCheckingUsername(false);
+      setUsernameAvailable(!data);
+    };
+    
+    const timeoutId = setTimeout(checkUsername, 600);
+    return () => clearTimeout(timeoutId);
+  }, [username]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
+      if (usernameAvailable === false) {
+        throw new Error('Please choose a different username, this one is already taken.');
+      }
+      if (!gender) {
+        throw new Error('Please select your gender.');
+      }
       const fullPhone = `+234${phone}`;
-      await register(name, email, password, fullPhone, referralCode);
+      await register(name, username, gender, email, password, fullPhone, referralCode);
       navigate('/login', { state: { message: 'Registration successful! Please confirm your email address to login.' } });
     } catch (err: any) {
       setError(err.message || 'Registration failed.');
@@ -82,6 +114,47 @@ const Register: React.FC = () => {
                   className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all text-sm"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">Username</label>
+              <div className="relative flex flex-col">
+                <div className="relative">
+                  <User className="absolute left-4 top-3.5 text-slate-400" size={18} />
+                  <input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="johndoe123"
+                    className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border rounded-2xl focus:outline-none focus:ring-2 focus:bg-white transition-all text-sm ${
+                      usernameAvailable === false ? 'border-rose-300 focus:ring-rose-500' : 'border-slate-100 focus:ring-emerald-600'
+                    }`}
+                  />
+                </div>
+                {username.trim().length >= 3 && (
+                  <p className={`text-xs mt-1 ml-1 font-semibold ${
+                    checkingUsername ? 'text-slate-400' : usernameAvailable ? 'text-emerald-600' : 'text-rose-600'
+                  }`}>
+                    {checkingUsername ? 'Checking availability...' : usernameAvailable ? 'Username is available!' : 'Username is already taken.'}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">Gender</label>
+              <select
+                required
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all text-sm appearance-none"
+              >
+                <option value="" disabled>Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
             </div>
 
             <div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Megaphone, Plus, Trash2, Download, Copy } from 'lucide-react';
+import { Megaphone, Plus, Trash2, Download, Copy, Pencil, Check } from 'lucide-react';
 import { supabase } from '../src/integrations/supabase/client';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -26,6 +26,7 @@ const Promotional: React.FC = () => {
     cta_text: 'Promote now',
     cta_url: '',
   });
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,16 +96,29 @@ const Promotional: React.FC = () => {
     e.preventDefault();
     if (!isAdmin) return;
 
-    const { error } = await supabase.from('promotions').insert({
-      ...form,
-      cta_url: form.cta_url || null,
-      created_by_user_id: user.id,
-      is_active: true,
-    });
+    if (editingId) {
+      const { error } = await supabase.from('promotions').update({
+        ...form,
+        cta_url: form.cta_url || null,
+      }).eq('id', editingId);
 
-    if (!error) {
-      setForm({ title: '', description: '', image_url: '', cta_text: 'Promote now', cta_url: '' });
-      loadPromotions();
+      if (!error) {
+        setForm({ title: '', description: '', image_url: '', cta_text: 'Promote now', cta_url: '' });
+        setEditingId(null);
+        loadPromotions();
+      }
+    } else {
+      const { error } = await supabase.from('promotions').insert({
+        ...form,
+        cta_url: form.cta_url || null,
+        created_by_user_id: user.id,
+        is_active: true,
+      });
+
+      if (!error) {
+        setForm({ title: '', description: '', image_url: '', cta_text: 'Promote now', cta_url: '' });
+        loadPromotions();
+      }
     }
   };
 
@@ -126,8 +140,15 @@ const Promotional: React.FC = () => {
         </div>
 
         {isAdmin && (
-          <form onSubmit={handleCreate} className="bg-white border border-slate-100 rounded-3xl p-6 md:p-8 mb-10 shadow-sm">
-            <h2 className="text-xl font-black text-slate-900 mb-5">Add Promotion</h2>
+          <form onSubmit={handleCreate} className="bg-white border border-slate-100 rounded-3xl p-6 md:p-8 mb-10 shadow-sm transition-all" id="promo-form">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-xl font-black text-slate-900">
+                {editingId ? 'Edit Promotion' : 'Add Promotion'}
+              </h2>
+              {editingId && (
+                <button type="button" onClick={() => { setEditingId(null); setForm({ title: '', description: '', image_url: '', cta_text: 'Promote now', cta_url: '' }); }} className="text-xs font-bold text-slate-400 hover:text-slate-600">Cancel Edit</button>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 value={form.title}
@@ -176,8 +197,8 @@ const Promotional: React.FC = () => {
                 required
               />
             </div>
-            <button className="mt-4 px-5 py-3 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
-              <Plus size={14} /> Add Promotion
+            <button className="mt-4 px-5 py-3 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all hover:bg-emerald-700">
+              {editingId ? <><Check size={14} /> Update Promotion</> : <><Plus size={14} /> Add Promotion</>}
             </button>
           </form>
         )}
@@ -208,9 +229,24 @@ const Promotional: React.FC = () => {
                         <Copy size={16} />
                       </button>
                       {isAdmin && (
-                        <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors" title="Delete Promotion">
-                          <Trash2 size={16} />
-                        </button>
+                        <>
+                          <button onClick={() => {
+                            setEditingId(item.id);
+                            setForm({
+                              title: item.title,
+                              description: item.description,
+                              image_url: item.image_url,
+                              cta_text: item.cta_text,
+                              cta_url: item.cta_url || '',
+                            });
+                            document.getElementById('promo-form')?.scrollIntoView({ behavior: 'smooth' });
+                          }} className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 transition-colors" title="Edit Promotion">
+                            <Pencil size={16} />
+                          </button>
+                          <button onClick={() => handleDelete(item.id)} className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors" title="Delete Promotion">
+                            <Trash2 size={16} />
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>

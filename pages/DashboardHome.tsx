@@ -15,7 +15,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import AdUnit from '../components/AdUnit';
+
 
 const DashboardHome: React.FC = () => {
   const { user, stats, systemPlans } = useAuth();

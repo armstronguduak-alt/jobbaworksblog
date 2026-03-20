@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import PostCard from '../components/PostCard';
-import AdUnit from '../components/AdUnit';
+
 import { HIGH_RPM_CATEGORIES } from '../constants';
 import { 
   Search, 
@@ -150,9 +150,9 @@ const Home: React.FC = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-8 md:gap-y-12">
               {paginatedPosts.map((post, index) => (
-                <div key={post.id} className={index === 0 && !activeCategory ? "md:col-span-2" : ""}>
+                <div key={post.id} className={index === 0 && !activeCategory ? "col-span-2 md:col-span-3" : ""}>
                    <PostCard post={post} variant={index === 0 && !activeCategory ? "large" : "small"} />
                 </div>
               ))}
@@ -237,7 +237,6 @@ const Home: React.FC = () => {
                 </div>
               </section>
 
-              <AdUnit type="rectangle" />
 
               <section className="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
