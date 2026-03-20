@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Save, User, Mail, Lock, Bell, Shield, Globe, CreditCard, ExternalLink } from 'lucide-react';
+import { supabase } from '../src/integrations/supabase/client';
 
 const Settings: React.FC = () => {
   const { user } = useAuth();
@@ -20,6 +21,32 @@ const Settings: React.FC = () => {
     minipayDetails: ''
   });
 
+  useEffect(() => {
+    const fetchPayouts = async () => {
+      if (!user) return;
+      const { data, error } = await supabase.from('payout_methods').select('*').eq('user_id', user.id);
+      if (data && !error) {
+        const opay = data.find(p => p.method === 'opay');
+        const usdt = data.find(p => p.method === 'usdt_trc20');
+        const mini = data.find(p => p.method === 'minipay');
+        
+        let opayAccountStr = '';
+        if (opay) {
+          if (opay.account_name && opay.account_number) opayAccountStr = `${opay.account_name} - ${opay.account_number}`;
+          else if (opay.account_name) opayAccountStr = opay.account_name;
+          else if (opay.account_number) opayAccountStr = opay.account_number;
+        }
+
+        setPayouts({
+          opayAccount: opayAccountStr,
+          usdtWallet: usdt?.wallet_address || '',
+          minipayDetails: mini?.minipay_uid || ''
+        });
+      }
+    };
+    fetchPayouts();
+  }, [user]);
+
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     alert('Profile updated successfully!');
@@ -30,9 +57,37 @@ const Settings: React.FC = () => {
     alert('Security settings updated successfully!');
   };
 
-  const handleSavePayouts = (e: React.FormEvent) => {
+  const handleSavePayouts = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Payout methods updated successfully!');
+    if (!user) return;
+    
+    let opayName = '';
+    let opayNumber = '';
+    if (payouts.opayAccount) {
+        const parts = payouts.opayAccount.split('-');
+        if (parts.length > 1) {
+            opayNumber = parts.pop()?.trim() || '';
+            opayName = parts.join('-').trim();
+        } else {
+            opayNumber = payouts.opayAccount.trim();
+        }
+    }
+
+    try {
+        if (payouts.opayAccount) {
+            await supabase.from('payout_methods').upsert({ user_id: user.id, method: 'opay', account_name: opayName, account_number: opayNumber }, { onConflict: 'user_id, method' });
+        }
+        if (payouts.usdtWallet) {
+            await supabase.from('payout_methods').upsert({ user_id: user.id, method: 'usdt_trc20', wallet_address: payouts.usdtWallet }, { onConflict: 'user_id, method' });
+        }
+        if (payouts.minipayDetails) {
+            await supabase.from('payout_methods').upsert({ user_id: user.id, method: 'minipay', minipay_uid: payouts.minipayDetails }, { onConflict: 'user_id, method' });
+        }
+        alert('Payout methods updated successfully!');
+    } catch (err) {
+        console.error(err);
+        alert('Failed to save payout methods.');
+    }
   };
 
   return (

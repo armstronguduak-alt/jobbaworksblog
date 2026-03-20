@@ -75,7 +75,7 @@ const Pricing: React.FC = () => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-20">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-8 mb-20 px-1 md:px-0">
         {(Object.values(systemPlans) as SubscriptionPlan[])
           .filter((plan) => plan.isActive !== false)
           .map((plan) => {
@@ -90,7 +90,7 @@ const Pricing: React.FC = () => {
             return (
               <div
                 key={plan.id}
-                className={`relative bg-white rounded-[2.5rem] p-8 shadow-xl transition-all hover:translate-y-[-4px] flex flex-col ${
+                className={`relative bg-white rounded-2xl md:rounded-[2.5rem] p-3 md:p-8 shadow-xl transition-all hover:translate-y-[-4px] flex flex-col ${
                   isPro
                     ? 'ring-4 ring-emerald-500 shadow-emerald-100'
                     : isPlatinum
@@ -101,24 +101,24 @@ const Pricing: React.FC = () => {
                 }`}
               >
                 {isPro && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-                    <Sparkles size={14} /> Popular
+                  <div className="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-2 md:px-4 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-1 whitespace-nowrap">
+                    <Sparkles size={12} className="hidden sm:block" /> Popular
                   </div>
                 )}
                 {isExecutive && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-                    <Star size={14} /> Ultimate
+                  <div className="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-2 md:px-4 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-1 whitespace-nowrap">
+                    <Star size={12} className="hidden sm:block" /> Ultimate
                   </div>
                 )}
                 {isPlatinum && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-                    <Crown size={14} /> Prestige
+                  <div className="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-2 md:px-4 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-1 whitespace-nowrap">
+                    <Crown size={12} className="hidden sm:block" /> Prestige
                   </div>
                 )}
 
-                <div className="mb-8">
+                <div className="mb-4 md:mb-8 text-center sm:text-left">
                   <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${
+                    className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl mx-auto sm:mx-0 flex items-center justify-center mb-3 md:mb-6 ${
                       isStarter
                         ? 'bg-blue-100 text-blue-600'
                         : isPro
@@ -134,60 +134,60 @@ const Pricing: React.FC = () => {
                         : 'bg-slate-100 text-slate-600'
                     }`}
                   >
-                    {plan.id === 'free' && <Shield size={24} />}
-                    {plan.id === 'starter' && <Rocket size={24} />}
-                    {plan.id === 'pro' && <Zap size={24} />}
-                    {plan.id === 'elite' && <Star size={24} />}
-                    {plan.id === 'vip' && <Crown size={24} />}
-                    {plan.id === 'executive' && <ShieldCheck size={24} />}
-                    {plan.id === 'platinum' && <Sparkles size={24} />}
+                    {plan.id === 'free' && <Shield className="w-5 h-5 md:w-6 md:h-6" />}
+                    {plan.id === 'starter' && <Rocket className="w-5 h-5 md:w-6 md:h-6" />}
+                    {plan.id === 'pro' && <Zap className="w-5 h-5 md:w-6 md:h-6" />}
+                    {plan.id === 'elite' && <Star className="w-5 h-5 md:w-6 md:h-6" />}
+                    {plan.id === 'vip' && <Crown className="w-5 h-5 md:w-6 md:h-6" />}
+                    {plan.id === 'executive' && <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />}
+                    {plan.id === 'platinum' && <Sparkles className="w-5 h-5 md:w-6 md:h-6" />}
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900 mb-2">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black text-slate-900">₦{plan.price}</span>
-                    <span className="text-slate-500 font-bold">one-time</span>
+                  <h3 className="text-sm sm:text-base md:text-2xl font-black text-slate-900 mb-1 md:mb-2 leading-tight">{plan.name}</h3>
+                  <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-1">
+                    <span className="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 leading-none">₦{plan.price}</span>
+                    <span className="text-[10px] sm:text-xs md:text-sm text-slate-500 font-bold">one-time</span>
                   </div>
                 </div>
 
-                <div className="space-y-4 mb-10 flex-1">
-                  <div className="bg-slate-50 p-4 rounded-2xl">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Performance Metrics</p>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-slate-600">Monthly Return Cap</span>
-                      <span className="text-sm font-black text-emerald-600">₦{(plan.monthlyReturnCap || 0).toLocaleString()}</span>
+                <div className="space-y-3 md:space-y-4 mb-6 md:mb-10 flex-1">
+                  <div className="bg-slate-50 p-2 md:p-4 rounded-xl md:rounded-2xl">
+                    <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 md:mb-3">Metrics</p>
+                    <div className="flex justify-between items-center mb-1.5 md:mb-2">
+                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-slate-600">Return Cap</span>
+                      <span className="text-[10px] sm:text-xs md:text-sm font-black text-emerald-600">₦{(plan.monthlyReturnCap || 0).toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-slate-600">Break-even Point</span>
-                      <span className="text-sm font-bold text-slate-900">{plan.breakEvenDay || 0} Days</span>
+                    <div className="flex justify-between items-center mb-1.5 md:mb-2">
+                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-slate-600">Break-even</span>
+                      <span className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-900">{plan.breakEvenDay || 0}d</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-slate-600">Required Referrals</span>
-                      <span className="text-sm font-bold text-slate-900">{plan.minReferrals || 0}</span>
+                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-slate-600">Referrals</span>
+                      <span className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-900">{plan.minReferrals || 0}</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-2">Read Tasks</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
+                    <div className="bg-emerald-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-emerald-100 text-center sm:text-left">
+                      <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-1 md:mb-2">Reads</p>
                       <div className="flex flex-col">
-                        <span className="text-lg font-black text-emerald-700">₦{plan.readReward.toFixed(2)}</span>
-                        <span className="text-[10px] font-bold text-emerald-600/70 uppercase">Daily limit: {plan.readLimit}</span>
+                        <span className="text-sm sm:text-base md:text-lg font-black text-emerald-700 leading-tight">₦{plan.readReward.toFixed(2)}</span>
+                        <span className="text-[8px] md:text-[10px] font-bold text-emerald-600/70 uppercase">Daily Limit: {plan.readLimit}</span>
                       </div>
                     </div>
-                    <div className="bg-purple-50 p-4 rounded-2xl border border-purple-100">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-purple-600 mb-2">Comment Tasks</p>
+                    <div className="bg-purple-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-purple-100 text-center sm:text-left">
+                      <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-purple-600 mb-1 md:mb-2">Comments</p>
                       <div className="flex flex-col">
-                        <span className="text-lg font-black text-purple-700">₦{plan.commentReward.toFixed(2)}</span>
-                        <span className="text-[10px] font-bold text-purple-600/70 uppercase">Daily limit: {plan.commentLimit}</span>
+                        <span className="text-sm sm:text-base md:text-lg font-black text-purple-700 leading-tight">₦{plan.commentReward.toFixed(2)}</span>
+                        <span className="text-[8px] md:text-[10px] font-bold text-purple-600/70 uppercase">Daily Limit: {plan.commentLimit}</span>
                       </div>
                     </div>
                   </div>
 
-                  <ul className="space-y-3 pt-4">
+                  <ul className="space-y-2 md:space-y-3 pt-2 md:pt-4">
                     {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
-                        <div className="shrink-0 w-5 h-5 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mt-0.5">
-                          <Check size={12} strokeWidth={3} />
+                      <li key={i} className="flex items-start gap-2 text-[10px] sm:text-xs md:text-sm text-slate-600 font-medium">
+                        <div className="shrink-0 w-3 h-3 md:w-5 md:h-5 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mt-0.5 md:mt-0">
+                          <Check className="w-2 h-2 md:w-3 md:h-3" strokeWidth={3} />
                         </div>
                         <span className="leading-tight">{feature}</span>
                       </li>
@@ -198,7 +198,7 @@ const Pricing: React.FC = () => {
                 <button
                   disabled={isCurrent}
                   onClick={() => handlePlanClick(plan)}
-                  className={`w-full py-4 rounded-2xl font-black transition-all flex items-center justify-center gap-2 ${
+                  className={`w-full py-2.5 md:py-4 rounded-xl md:rounded-2xl text-[10px] sm:text-xs md:text-base font-black transition-all flex items-center justify-center gap-1.5 md:gap-2 ${
                     isCurrent
                       ? 'bg-slate-100 text-slate-400 cursor-default'
                       : isPlatinum
