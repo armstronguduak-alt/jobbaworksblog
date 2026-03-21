@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from 'react';
-import { AlertCircle, X } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { AlertCircle, X, Lock } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../src/integrations/supabase/client';
 
 type CurrencyMode = 'naira' | 'usdt';
 type PayoutMethodKey = 'opay' | 'usdt_trc20' | 'minipay';
@@ -40,6 +42,36 @@ const WithdrawalModal: React.FC<WithdrawalModalProps> = ({
   const [accountNumber, setAccountNumber] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
   const [miniPayDetails, setMiniPayDetails] = useState('');
+  const [payoutPin, setPayoutPin] = useState('');
+  const [validPin, setValidPin] = useState<string | null>(null);
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (isOpen && user) {
+      const fetchSavedDetails = async () => {
+        const [{ data: payoutData }, { data: profile }] = await Promise.all([
+           supabase.from('payout_methods').select('*').eq('user_id', user.id),
+           supabase.from('profiles' as any).select('payout_pin').eq('user_id', user.id).single()
+        ]);
+        
+        if ((profile as any)?.payout_pin) setValidPin((profile as any).payout_pin);
+
+        if (payoutData) {
+          const opay = payoutData.find((p: any) => p.method === 'opay');
+          if (opay) {
+             if (opay.account_name) setAccountName(opay.account_name);
+             if (opay.account_number) setAccountNumber(opay.account_number);
+          }
+          const usdt = payoutData.find((p: any) => p.method === 'usdt_trc20');
+          if (usdt && usdt.wallet_address) setWalletAddress(usdt.wallet_address);
+          const mini = payoutData.find((p: any) => p.method === 'minipay');
+          if (mini && mini.minipay_uid) setMiniPayDetails(mini.minipay_uid);
+        }
+      };
+      fetchSavedDetails();
+    }
+  }, [isOpen, user]);
 
   const minAmount = currency === 'naira' ? 1000 : 10;
   const maxAmount = currency === 'naira' ? balanceNaira : balanceUsdt;
@@ -54,6 +86,11 @@ const WithdrawalModal: React.FC<WithdrawalModalProps> = ({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (validPin && payoutPin !== validPin) {
+      alert("Incorrect Payout PIN.");
+      return;
+    }
+
     const parsedAmount = Number(amount);
     if (!parsedAmount || parsedAmount < minAmount || parsedAmount > maxAmount) return;
 
@@ -148,6 +185,21 @@ const WithdrawalModal: React.FC<WithdrawalModalProps> = ({
             <label className="mb-2 block text-xs font-black uppercase tracking-widest text-slate-500">Amount ({currency === 'naira' ? '₦' : 'USDT'})</label>
             <input type="number" min={minAmount} max={maxAmount} step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} required className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-600" />
             <p className="mt-2 text-xs text-slate-500">Available: {currency === 'naira' ? `₦${balanceNaira.toFixed(2)}` : `${balanceUsdt.toFixed(2)} USDT`}</p>
+          </div>
+
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-600">
+              <Lock size={14} /> Payout PIN (4-Digit)
+            </label>
+            <input 
+              type="password" 
+              maxLength={4}
+              value={payoutPin} 
+              onChange={(e) => setPayoutPin(e.target.value.replace(/\D/g, ''))} 
+              required 
+              placeholder="Enter your PIN"
+              className="w-full rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-mono text-xl tracking-[0.5em] outline-none focus:ring-2 focus:ring-emerald-600" 
+            />
           </div>
 
           <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-xs text-emerald-800">

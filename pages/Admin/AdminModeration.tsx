@@ -31,7 +31,8 @@ const AdminModeration: React.FC = () => {
 
   const handleStatus = async (id: string, status: 'approved' | 'rejected' | 'draft') => {
     const category = selectedCategories[id];
-    const rTime = readingTimes[id] || 25;
+    const postItem = posts.find(p => p.id === id);
+    const rTime = readingTimes[id] ?? postItem?.readingTimeSeconds ?? 25;
     await updatePostStatus(id, status, category, rTime);
   };
 

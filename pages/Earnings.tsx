@@ -35,6 +35,8 @@ const Earnings: React.FC = () => {
 
   const readProgress = (stats.postsReadToday / plan.readLimit) * 100;
   const commentProgress = (stats.commentsMadeToday / plan.commentLimit) * 100;
+  const efficiencyRaw = 100 - (((stats.postsReadToday + stats.commentsMadeToday) / (plan.readLimit + plan.commentLimit)) * 100 || 0);
+  const earningEfficiency = Math.max(0, Math.min(100, efficiencyRaw)).toFixed(1) + '%';
 
   // Simulated daily earnings for the last 7 days
   const weeklyData = [
@@ -87,7 +89,7 @@ const Earnings: React.FC = () => {
           </div>
           <div>
             <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Earning Efficiency</p>
-            <h4 className="text-2xl font-black text-slate-900">88.4%</h4>
+            <h4 className="text-2xl font-black text-slate-900">{earningEfficiency}</h4>
           </div>
         </div>
 
@@ -139,6 +141,20 @@ const Earnings: React.FC = () => {
           </div>
 
           <div className="space-y-8">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                <BookOpen size={18} />
+              </div>
+              <div className="flex-1">
+                <div className="flex justify-between text-xs font-black uppercase tracking-widest mb-2">
+                  <span className="text-slate-400">Authorship Bonus</span>
+                  <span className="text-slate-900">₦{stats.postEarnings.toFixed(2)}</span>
+                </div>
+                <div className="w-full bg-slate-50 h-2 rounded-full overflow-hidden">
+                  <div className="bg-indigo-500 h-full rounded-full" style={{ width: '20%' }}></div>
+                </div>
+              </div>
+            </div>
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                 <BookOpen size={18} />
@@ -263,18 +279,18 @@ const Earnings: React.FC = () => {
                 <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
                   <Users size={16} className="text-blue-600" />
                 </div>
-                <span className="text-sm font-medium text-slate-600">Referral Registration</span>
+                <span className="text-sm font-medium text-slate-600">Referral Upgrade Bonus</span>
               </div>
-              <span className="text-sm font-black text-slate-900">₦2.00</span>
+              <span className="text-sm font-black text-slate-900">25% Commission</span>
             </div>
             <div className="py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
                   <TrendingUp size={16} className="text-amber-600" />
                 </div>
-                <span className="text-sm font-medium text-slate-600">Active Referral Bonus</span>
+                <span className="text-sm font-medium text-slate-600">Active Node (Unavailable)</span>
               </div>
-              <span className="text-sm font-black text-slate-900">₦3.00</span>
+              <span className="text-sm font-black text-slate-400">Locked</span>
             </div>
           </div>
           

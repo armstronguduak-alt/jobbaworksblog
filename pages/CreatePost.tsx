@@ -414,6 +414,20 @@ const CreatePost: React.FC = () => {
           </div>
 
           <div className="w-px h-6 bg-slate-200 mx-2" />
+          
+          {isStory && (
+            <button
+              type="button"
+              onClick={() => {
+                const chapterNum = content.split('<h2>').length;
+                editor?.chain().focus().insertContent(`<h2>Chapter ${chapterNum}</h2><p>Start writing chapter ${chapterNum} here...</p>`).run();
+              }}
+              className="flex items-center gap-2 px-3 py-2 text-indigo-600 bg-indigo-50 border border-indigo-100 font-bold text-xs rounded-xl transition-all whitespace-nowrap mr-2 hover:bg-indigo-100"
+            >
+              <FileText size={14} /> Add Chapter
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => setEditorMode('preview')}

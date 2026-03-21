@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../src/integrations/supabase/client';
 import { Plus, Target, Trash2, Edit } from 'lucide-react';
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  reward_amount: number;
-  target_count: number;
-  task_type: string;
-  status: string;
-  required_plan: string;
-  duration_hours: number;
-  affiliate_url: string | null;
-}
+import { Task } from '../../types';
 
 const AdminTasks: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);

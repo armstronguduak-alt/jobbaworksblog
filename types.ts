@@ -148,3 +148,23 @@ export interface SubscriptionPlan {
   features: string[];
   isActive?: boolean;
 }
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  reward_amount: number;
+  target_count: number;
+  task_type: string;
+  status: string;
+  required_plan: string;
+  duration_hours: number;
+  affiliate_url: string | null;
+}
+
+export interface UserTask {
+  task_id: string;
+  progress: number;
+  completed: boolean;
+  reward_claimed: boolean;
+}

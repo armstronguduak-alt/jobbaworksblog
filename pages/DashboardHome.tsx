@@ -13,7 +13,9 @@ import {
   Sparkles,
   Target,
   ArrowRight,
-  Bell
+  Bell,
+  HelpCircle,
+  ChevronDown
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../src/integrations/supabase/client';
@@ -32,14 +34,18 @@ const DashboardHome: React.FC = () => {
   const withdrawalEligible = plan && stats.referrals >= plan.minReferrals && stats.totalEarnings > 0 && (stats.postsReadToday > 0 || stats.commentsMadeToday > 0);
 
   const [notifications, setNotifications] = React.useState<any[]>([]);
+  const [showNotifications, setShowNotifications] = React.useState(false);
+  
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   React.useEffect(() => {
     if (user) {
-      supabase.from('notifications')
+      // @ts-ignore
+      supabase.from('notifications' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(5)
+        .limit(10)
         .then(({ data }) => {
           if (data) setNotifications(data);
         });
@@ -64,29 +70,52 @@ const DashboardHome: React.FC = () => {
   return (
     <div className="animate-fade-in space-y-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-         <div>
-           <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-2">
-             Welcome back, <span className="text-emerald-600">{user?.name.split(' ')[0]}</span>.
-           </h2>
-           <p className="text-slate-500 serif-text text-lg">Your intellectual assets are performing at peak efficiency.</p>
-         </div>
+          <div>
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-2">
+              Welcome back, <span className="text-emerald-600">{user?.name.split(' ')[0]}</span>.
+            </h2>
+            <p className="text-slate-500 text-sm">Track your progress and earnings directly.</p>
+          </div>
          
-         <div className="flex items-center gap-3">
+         <div className="flex items-center gap-3 relative">
            <div className="px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center gap-2">
              <Sparkles className="text-indigo-600" size={16} />
              <span className="text-xs font-black text-indigo-700 uppercase tracking-widest">Current Plan: {plan.name}</span>
            </div>
-           <div className="flex -space-x-3">
-             {[1,2,3].map(i => (
-               <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-100 overflow-hidden shadow-sm">
-                 <img src={`https://i.pravatar.cc/150?u=${i + 10}`} alt="" />
+           
+           <button 
+             onClick={() => setShowNotifications(!showNotifications)} 
+             className="relative p-2.5 bg-slate-50 border border-slate-100 rounded-xl hover:bg-slate-100 transition-colors"
+           >
+             <Bell size={20} className="text-slate-600" />
+             {unreadCount > 0 && (
+               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
+                 {unreadCount > 9 ? '9+' : unreadCount}
+               </span>
+             )}
+           </button>
+
+           {showNotifications && (
+             <div className="absolute top-14 right-0 w-[320px] bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 z-50">
+               <h4 className="text-sm font-black text-slate-900 mb-4 pb-3 border-b border-slate-100">Notifications</h4>
+               <div className="space-y-3 max-h-80 overflow-y-auto pr-2 no-scrollbar">
+                 {notifications.length === 0 ? (
+                   <p className="text-xs text-slate-500 text-center py-6">No notifications.</p>
+                 ) : (
+                   notifications.map((notif) => (
+                     <div 
+                       key={notif.id} 
+                       onClick={() => markNotificationRead(notif.id, notif.is_read)}
+                       className={`p-3 rounded-xl border transition-all cursor-pointer ${notif.is_read ? 'bg-slate-50 border-slate-50 opacity-70' : 'bg-indigo-50 border-indigo-100'}`}
+                     >
+                       <p className="text-xs font-bold text-slate-900 leading-relaxed mb-1">{notif.message}</p>
+                       <p className="text-[10px] text-slate-400 font-medium">Click to mark read</p>
+                     </div>
+                   ))
+                 )}
                </div>
-             ))}
-             <div className="w-10 h-10 rounded-full border-4 border-white bg-emerald-600 flex items-center justify-center text-[10px] font-black text-white shadow-sm">
-               +12
              </div>
-           </div>
-           <span className="text-xs font-bold text-slate-400">Active Network</span>
+           )}
          </div>
       </div>
 
@@ -182,35 +211,6 @@ const DashboardHome: React.FC = () => {
         </div>
       </div>
 
-      {notifications.length > 0 && (
-        <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-          <h3 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
-            <Bell size={20} className="text-indigo-600" /> Notifications
-          </h3>
-          <div className="space-y-4">
-            {notifications.map((notif) => (
-              <div 
-                key={notif.id} 
-                onClick={() => markNotificationRead(notif.id, notif.is_read)}
-                className={`p-4 rounded-xl border transition-all cursor-pointer ${notif.is_read ? 'bg-slate-50 border-slate-100 opacity-70' : 'bg-indigo-50 border-indigo-100'}`}
-              >
-                <div className="flex justify-between items-start gap-4">
-                  <div>
-                    <span className={`text-[10px] font-black uppercase tracking-widest mb-1 block ${notif.is_read ? 'text-slate-500' : 'text-indigo-600'}`}>
-                      {notif.type}
-                    </span>
-                    <p className={`text-sm ${notif.is_read ? 'text-slate-600 font-medium' : 'text-slate-900 font-bold'}`}>
-                      {notif.message}
-                    </p>
-                  </div>
-                  {!notif.is_read && <div className="w-2 h-2 rounded-full bg-indigo-500 shrink-0 mt-1"></div>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Secondary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
@@ -236,7 +236,7 @@ const DashboardHome: React.FC = () => {
           <div className="relative z-10">
             <h4 className="text-xl font-black text-slate-900 mb-4">Referral Protocol</h4>
             <p className="text-slate-500 text-sm mb-8 leading-relaxed max-w-md serif-text">
-              Expand the <span className="text-emerald-600 font-bold">JobbaWorks</span> ecosystem by inviting high-performance creators. Every successful node activation yields a <span className="text-emerald-600 font-bold">₦2.00</span> bounty.
+              Expand the <span className="text-emerald-600 font-bold">JobbaWorks</span> ecosystem by inviting high-performance creators. Every successful node activation yields an instant <span className="text-emerald-600 font-bold">25%</span> bounty of their upgraded plan.
             </p>
             <div className="flex items-center gap-3">
               <div className="flex-1 bg-slate-50 border border-slate-100 px-6 py-4 rounded-2xl text-slate-900 font-mono font-black text-center tracking-[0.3em] text-lg break-all">
@@ -269,6 +269,33 @@ const DashboardHome: React.FC = () => {
              </Link>
           </div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm mt-8">
+        <h3 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+          <HelpCircle size={20} className="text-indigo-600" /> Platform Guidelines (FAQ)
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { q: "How do I earn reading rewards?", a: "To earn, stay active on an article page until the timer finishes. Make sure you select articles properly tracking the reading cycle." },
+            { q: "How does the referral system work?", a: "For every direct invite that upgrades their account, you automatically earn a 25% direct commission straight to your total withdrawable balance." },
+            { q: "When can I withdraw my earnings?", a: "Withdrawals are open manually when you hit the minimum requirements of your active plan, such as total reads and mandatory active referrals." },
+            { q: "What's the difference between Articles & Stories?", a: "Articles yield ₦500 upon approval. Stories are properly structured into multi-page Chapters yielding a higher ₦1,000 bonus on publish." },
+            { q: "Why did my plan fee appear in my balance?", a: "Upgrades are actively mapped backwards into your internal ledger balance, but they are logically non-withdrawable to strictly buffer your account activity limits. It is the earnings you make on top of it that will be eligible for withdrawal." },
+            { q: "Can I earn twice from commenting on the same post?", a: "No. You can only claim a reading or commenting reward on a specific post once in a lifetime." },
+            { q: "Can I earn when admin edits and republishes my approved post?", a: "No, a post yields its ₦500 or ₦1,000 approval bonus only once per lifetime." }
+          ].map((faq, i) => (
+             <details key={i} className="group border border-slate-100 rounded-2xl p-4 cursor-pointer bg-slate-50 open:bg-white transition-colors">
+               <summary className="text-sm font-bold text-slate-800 focus:outline-none flex justify-between items-center">
+                 {faq.q}
+                 <ChevronDown size={16} className="text-slate-400 group-open:rotate-180 transition-transform" />
+               </summary>
+               <p className="text-sm text-slate-500 mt-3 pl-2 border-l-2 border-indigo-200">
+                 {faq.a}
+               </p>
+             </details>
+          ))}
         </div>
       </div>
     </div>

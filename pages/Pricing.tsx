@@ -79,7 +79,13 @@ const Pricing: React.FC = () => {
         {(Object.values(systemPlans) as SubscriptionPlan[])
           .filter((plan) => plan.isActive !== false)
           .map((plan) => {
+            const planHierarchy = ['free', 'starter', 'pro', 'elite', 'vip', 'executive', 'platinum'];
+            const userPlanIndex = user ? planHierarchy.indexOf(user.planId) : -1;
+            const thisPlanIndex = planHierarchy.indexOf(plan.id);
             const isCurrent = user?.planId === plan.id;
+            const isLowerTier = Boolean(user && thisPlanIndex < userPlanIndex);
+            const isLowerOrEqual = Boolean(isCurrent || isLowerTier);
+
             const isStarter = plan.id === 'starter';
             const isPro = plan.id === 'pro';
             const isElite = plan.id === 'elite';
@@ -196,11 +202,11 @@ const Pricing: React.FC = () => {
                 </div>
 
                 <button
-                  disabled={isCurrent}
+                  disabled={isLowerOrEqual}
                   onClick={() => handlePlanClick(plan)}
                   className={`w-full py-2.5 md:py-4 rounded-xl md:rounded-2xl text-[10px] sm:text-xs md:text-base font-black transition-all flex items-center justify-center gap-1.5 md:gap-2 ${
-                    isCurrent
-                      ? 'bg-slate-100 text-slate-400 cursor-default'
+                    isLowerOrEqual
+                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
                       : isPlatinum
                       ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-100 active:scale-95'
                       : isExecutive
@@ -210,7 +216,7 @@ const Pricing: React.FC = () => {
                       : 'bg-slate-900 text-white hover:bg-black active:scale-95'
                   }`}
                 >
-                  {isCurrent ? 'Current Plan' : plan.id === 'free' ? 'Basic Access' : 'Upgrade Now'}
+                  {isCurrent ? 'Current Plan' : isLowerTier ? 'Unavailable' : plan.id === 'free' ? 'Basic Access' : 'Upgrade Now'}
                 </button>
               </div>
             );

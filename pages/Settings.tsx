@@ -20,15 +20,24 @@ const Settings: React.FC = () => {
     usdtWallet: '',
     minipayDetails: ''
   });
+  const [payoutPin, setPayoutPin] = useState('');
 
   useEffect(() => {
     const fetchPayouts = async () => {
       if (!user) return;
-      const { data, error } = await supabase.from('payout_methods').select('*').eq('user_id', user.id);
-      if (data && !error) {
-        const opay = data.find(p => p.method === 'opay');
-        const usdt = data.find(p => p.method === 'usdt_trc20');
-        const mini = data.find(p => p.method === 'minipay');
+      const [{ data: payoutData, error: payoutError }, { data: profile }] = await Promise.all([
+        supabase.from('payout_methods').select('*').eq('user_id', user.id),
+        supabase.from('profiles' as any).select('payout_pin').eq('user_id', user.id).single()
+      ]);
+      
+      if ((profile as any)?.payout_pin) {
+        setPayoutPin((profile as any).payout_pin);
+      }
+
+      if (payoutData && !payoutError) {
+        const opay = payoutData.find((p: any) => p.method === 'opay');
+        const usdt = payoutData.find((p: any) => p.method === 'usdt_trc20');
+        const mini = payoutData.find((p: any) => p.method === 'minipay');
         
         let opayAccountStr = '';
         if (opay) {
@@ -83,10 +92,14 @@ const Settings: React.FC = () => {
         if (payouts.minipayDetails) {
             await supabase.from('payout_methods').upsert({ user_id: user.id, method: 'minipay', minipay_uid: payouts.minipayDetails }, { onConflict: 'user_id, method' });
         }
-        alert('Payout methods updated successfully!');
-    } catch (err) {
+        if (payoutPin) {
+            if (!/^\d{4}$/.test(payoutPin)) throw new Error('Payout PIN must be exactly 4 digits.');
+            await supabase.from('profiles' as any).update({ payout_pin: payoutPin }).eq('user_id', user.id);
+        }
+        alert('Payout configuration saved successfully!');
+    } catch (err: any) {
         console.error(err);
-        alert('Failed to save payout methods.');
+        alert('Failed to save configuration: ' + err.message);
     }
   };
 
@@ -233,6 +246,22 @@ const Settings: React.FC = () => {
                     Don't have an account? <a href="https://link.minipay.xyz/invite?ref=WeBQSVr8" target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-bold hover:underline inline-flex items-center gap-1">Create MiniPay account <ExternalLink size={10} /></a>
                   </p>
                 )}
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  <Lock size={16} className="text-emerald-600" />
+                  Your 4-Digit Payout PIN
+                </label>
+                <input 
+                  type="password" 
+                  maxLength={4}
+                  value={payoutPin}
+                  onChange={(e) => setPayoutPin(e.target.value.replace(/\D/g, ''))}
+                  placeholder="e.g. 1234"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all tracking-[0.5em] font-mono text-xl mb-2"
+                />
+                <p className="text-xs text-rose-500 font-bold">Never share this PIN! It is required to approve all withdrawals.</p>
               </div>
 
               <div className="flex justify-end pt-4">

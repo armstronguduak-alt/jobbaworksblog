@@ -522,9 +522,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    const { data: listener } = db.auth.onAuthStateChange((_event: string, session: any) => {
+    const { data: listener } = db.auth.onAuthStateChange((event: string, session: any) => {
       if (!mounted) return;
-      void hydrateSafely(session);
+      
+      // Prevent full app reloads on token background refreshes
+      if (['INITIAL_SESSION', 'SIGNED_IN', 'SIGNED_OUT'].includes(event)) {
+         void hydrateSafely(session);
+      } else if (event === 'USER_UPDATED' && session?.user) {
+         void refreshAppData(session.user.id);
+      }
     });
 
     const bootstrap = async () => {
@@ -632,6 +638,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (name: string, username: string, gender: string, email: string, password: string, phone: string, refCode?: string) => {
+    if (phone) {
+      const { count } = await db.from('profiles').select('*', { count: 'exact', head: true }).eq('phone', phone);
+      if (count && count > 0) {
+        throw new Error('This phone number has already been used by another account. One phone number per user is allowed.');
+      }
+    }
+
     const normalizedCode = refCode?.trim().toUpperCase() || null;
     const avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(username || name)}`;
 
@@ -674,6 +687,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) return { success: false, message: 'User not authenticated' };
 
     if (type === 'reading') {
+      const { data: previousRead } = await db.from('post_reads').select('id').eq('post_id', key).eq('user_id', user.id).maybeSingle();
+      if (previousRead) {
+          return { success: false, message: 'You have already claimed the reading reward for this post.' };
+      }
       const { data, error } = await db.rpc('claim_post_read', { _post_id: key });
       if (error) return { success: false, message: error.message || 'Could not claim reading reward.' };
       await hydrateUserAndStats(user.id);
@@ -709,6 +726,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const submitCommentWithReward = async (postId: string, content: string) => {
     if (!user) return { success: false, message: 'User not authenticated' };
+
+    const { data: previousCommentReward } = await db.from('comment_earnings').select('id').eq('post_id', postId).eq('user_id', user.id).maybeSingle();
+    
+    if (previousCommentReward) {
+        // User already earned the comment reward for this post, let them comment without reward erroring out
+        const { error } = await db.from('post_comments').insert({ post_id: postId, user_id: user.id, content });
+        if (error) return { success: false, message: 'Failed to submit comment.' };
+        await hydratePosts(user.id, user.role);
+        return { success: true, message: 'Comment submitted successfully.' };
+    }
 
     const { data, error } = await db.rpc('submit_comment_with_reward', {
       _post_id: postId,
@@ -797,14 +824,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (status === 'approved') {
        try {
-         await addReward('post_approval', postId, 500);
          const postItem = posts.find(p => p.id === postId);
          if (postItem && postItem.authorId) {
-            await db.from('notifications').insert({
-               user_id: postItem.authorId,
-               type: 'approval',
-               message: `Your article "${postItem.title}" has been approved! You earned a ₦500 bonus.`
-            });
+             const { data: previousRewards } = await db.from('wallet_transactions')
+                .select('id')
+                .eq('type', 'post_approval_reward')
+                .eq('user_id', postItem.authorId)
+                .contains('meta', { post_id: postId })
+                .maybeSingle();
+
+             if (!previousRewards) {
+                 const rewardAmount = postItem.isStory ? 1000 : 500;
+                 await db.rpc('credit_wallet', { 
+                    _user_id: postItem.authorId, 
+                    _amount: rewardAmount, 
+                    _type: 'post_approval_reward', 
+                    _description: 'Post Approval Reward', 
+                    _meta: { post_id: postId } 
+                 });
+                 // I will also send notification here!
+                 await db.from('notifications' as any).insert({ user_id: postItem.authorId, type: 'approval', message: `Your ${postItem.isStory ? 'Story' : 'Article'} "${postItem.title}" has been approved! You earned a ₦${rewardAmount} bonus.` });
+             }
          }
        } catch (err) {
          console.error('Failed to issue approval reward/notification:', err);
@@ -867,13 +907,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       _new_plan_id: planId 
     });
 
-    // Fallback to table update if RPC isn't deployed yet
     if (rpcError) {
       const { error: upsertError } = await db
         .from('user_subscriptions')
         .upsert({ user_id: user.id, plan_id: planId, plan_earnings: 0 }, { onConflict: 'user_id' });
 
       if (upsertError) return false;
+      
+      const { data: wallet } = await db.from('wallet_balances').select('balance').eq('user_id', user.id).maybeSingle();
+      if (wallet) {
+          await db.from('wallet_balances').update({
+             balance: Number(wallet.balance) + Number(plan.price)
+          }).eq('user_id', user.id);
+      }
+      
+      const { data: refRecord } = await db.from('referrals').select('referrer_user_id').eq('referred_user_id', user.id).maybeSingle();
+      if (refRecord?.referrer_user_id) {
+          const commission = Number(plan.price) * 0.25;
+          await db.from('referral_commissions').insert({
+             referrer_user_id: refRecord.referrer_user_id,
+             referred_user_id: user.id,
+             commission_amount: commission
+          });
+          const { data: refWallet } = await db.from('wallet_balances').select('*').eq('user_id', refRecord.referrer_user_id).maybeSingle();
+          if (refWallet) {
+             await db.from('wallet_balances').update({
+                balance: Number(refWallet.balance) + commission,
+                total_earnings: Number(refWallet.total_earnings) + commission,
+                referral_earnings: Number(refWallet.referral_earnings) + commission
+             }).eq('user_id', refRecord.referrer_user_id);
+          }
+      }
     }
 
     await db.from('wallet_transactions').insert({

@@ -2,26 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Target, Gift, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import { supabase } from '../src/integrations/supabase/client';
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  reward_amount: number;
-  target_count: number;
-  task_type: string;
-  status: string;
-  required_plan: string;
-  duration_hours: number;
-  affiliate_url: string | null;
-}
-
-interface UserTask {
-  task_id: string;
-  progress: number;
-  completed: boolean;
-  reward_claimed: boolean;
-}
+import { Task, UserTask } from '../types';
 
 const Tasks: React.FC = () => {
   const { user, stats } = useAuth();
