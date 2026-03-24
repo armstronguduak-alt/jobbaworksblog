@@ -18,7 +18,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, variant = 'large' }) => {
             {post.title}
           </h4>
           <div className="mt-2 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <span>{post.author.name}</span>
+            <span>{post.author.name} {post.author.username ? `@${post.author.username}` : ''}</span>
             <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
             <span>{post.publishDate}</span>
           </div>
@@ -63,7 +63,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, variant = 'large' }) => {
               <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-900">{post.author.name}</span>
+              <span className="text-xs font-bold text-slate-900">{post.author.name} {post.author.username ? <span className="text-slate-500 font-medium">@{post.author.username}</span> : ''}</span>
               <span className="text-[10px] font-medium text-slate-400">{post.publishDate}</span>
             </div>
           </div>

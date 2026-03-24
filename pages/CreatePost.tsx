@@ -105,7 +105,7 @@ const CreatePost: React.FC = () => {
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-slate prose-lg max-w-none serif-text leading-relaxed whitespace-pre-wrap break-words focus:outline-none min-h-[400px]',
+        class: 'prose prose-invert prose-lg max-w-none serif-text leading-relaxed whitespace-pre-wrap break-words focus:outline-none min-h-[400px]',
       },
     },
   });
@@ -256,33 +256,33 @@ const CreatePost: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
-      <header className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 z-50 px-4 py-3 md:px-8 flex items-center justify-between gap-3">
+    <div className="min-h-screen bg-[#0A0D14] overflow-x-hidden">
+      <header className="sticky top-0 bg-[#0A0D14]/80 backdrop-blur-xl border-b border-slate-800/80 z-50 px-4 py-3 md:px-8 flex items-center justify-between gap-3 shadow-lg">
         <div className="flex items-center gap-4 min-w-0">
-          <button onClick={() => navigate(-1)} className="p-2 hover:bg-slate-50 rounded-full transition-colors" type="button">
+          <button onClick={() => navigate(-1)} className="p-2 hover:bg-[#1A2234] text-slate-300 rounded-full transition-colors" type="button">
             <ChevronLeft size={20} />
           </button>
-          <div className="h-6 w-px bg-slate-200" />
-          <span className="text-sm font-bold text-slate-400 truncate">{id ? 'Editing Article' : 'New Article'}</span>
+          <div className="h-6 w-px bg-slate-800" />
+          <span className="text-sm font-black tracking-widest uppercase text-slate-500 truncate">{id ? 'Editing Article' : 'New Article'}</span>
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => setShowSettings(true)} className="p-2.5 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" title="Article Settings" type="button">
+          <button onClick={() => setShowSettings(true)} className="p-2.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-all" title="Article Settings" type="button">
             <Settings size={20} />
           </button>
           <button
             onClick={() => handleAction('draft')}
-            className="hidden md:flex items-center gap-2 px-5 py-2.5 text-slate-600 font-bold text-sm hover:bg-slate-50 rounded-xl transition-all"
+            className="hidden md:flex items-center gap-2 px-5 py-2.5 text-slate-400 font-bold text-sm hover:text-white hover:bg-[#1A2234] rounded-xl transition-all uppercase tracking-widest text-xs"
             type="button"
           >
-            <Save size={18} /> Save Draft
+            <Save size={16} /> Save Draft
           </button>
           <button
             onClick={() => handleAction('pending')}
-            className="flex items-center gap-2 px-4 md:px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 active:scale-95"
+            className="flex items-center gap-2 px-4 md:px-6 py-2.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs uppercase tracking-widest font-black hover:bg-emerald-500/20 transition-all shadow-lg active:scale-95"
             type="button"
           >
-            <Send size={18} /> Publish
+            <Send size={16} /> Publish
           </button>
         </div>
       </header>
@@ -292,7 +292,7 @@ const CreatePost: React.FC = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Enter an article title..."
-          className="w-full text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 placeholder:text-slate-200 focus:outline-none resize-none overflow-hidden h-auto serif-text leading-tight mb-8"
+          className="w-full text-4xl md:text-5xl lg:text-6xl font-black text-white placeholder:text-slate-700 focus:outline-none resize-none overflow-hidden h-auto serif-text leading-tight mb-8 bg-transparent drop-shadow-md"
           rows={1}
           onInput={(e) => {
             const target = e.target as HTMLTextAreaElement;
@@ -301,18 +301,18 @@ const CreatePost: React.FC = () => {
           }}
         />
 
-        <div className="mb-6 p-4 rounded-2xl border border-slate-200 bg-slate-50/60">
+        <div className="mb-6 p-4 rounded-2xl border border-slate-800 bg-[#1A2234]/50 shadow-inner">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="min-w-0">
-              <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <FileText size={16} /> Import Article Document
+              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                <FileText size={16} className="text-indigo-400" /> Import Article Document
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                Recommended: <strong>.docx</strong> for full typography. Imported content stays editable and preserves spacing/empty lines.
+              <p className="text-xs text-slate-500 mt-1 font-medium">
+                Recommended: <strong className="text-white">.docx</strong> for full typography. Imported content stays editable and preserves spacing/empty lines.
               </p>
             </div>
-            <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider cursor-pointer hover:bg-emerald-700 transition-all">
-              <Upload size={15} /> {isImporting ? 'Importing...' : 'Upload File'}
+            <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-indigo-500/20 transition-all shadow-md">
+              <Upload size={14} /> {isImporting ? 'Importing...' : 'Upload File'}
               <input
                 type="file"
                 className="hidden"
@@ -326,19 +326,19 @@ const CreatePost: React.FC = () => {
               />
             </label>
           </div>
-          {importError && <p className="text-xs text-rose-600 mt-3 font-semibold">{importError}</p>}
+          {importError && <p className="text-xs text-rose-500 mt-3 font-bold">{importError}</p>}
         </div>
 
-        <div className="flex flex-wrap items-center gap-1 mb-6 p-2 bg-slate-50 rounded-2xl w-full">
-          <button onClick={() => editor?.chain().focus().toggleBold().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('bold') ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><Bold size={18} /></button>
-          <button onClick={() => editor?.chain().focus().toggleItalic().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('italic') ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><Italic size={18} /></button>
-          <div className="w-px h-6 bg-slate-200 mx-1" />
-          <button onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('heading', { level: 1 }) ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><Heading1 size={18} /></button>
-          <button onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('heading', { level: 2 }) ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><Heading2 size={18} /></button>
-          <button onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('heading', { level: 3 }) ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><Heading3 size={18} /></button>
-          <button onClick={() => editor?.chain().focus().toggleBulletList().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('bulletList') ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}><List size={18} /></button>
+        <div className="flex flex-wrap items-center gap-1 mb-6 p-2 bg-[#1A2234] border border-slate-800 rounded-2xl w-full">
+          <button onClick={() => editor?.chain().focus().toggleBold().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('bold') ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'}`}><Bold size={18} /></button>
+          <button onClick={() => editor?.chain().focus().toggleItalic().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('italic') ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'}`}><Italic size={18} /></button>
+          <div className="w-px h-6 bg-slate-800 mx-1" />
+          <button onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('heading', { level: 1 }) ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'}`}><Heading1 size={18} /></button>
+          <button onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('heading', { level: 2 }) ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'}`}><Heading2 size={18} /></button>
+          <button onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('heading', { level: 3 }) ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'}`}><Heading3 size={18} /></button>
+          <button onClick={() => editor?.chain().focus().toggleBulletList().run()} className={`p-2.5 rounded-xl transition-all ${editor?.isActive('bulletList') ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'}`}><List size={18} /></button>
           
-          <div className="w-px h-6 bg-slate-200 mx-1" />
+          <div className="w-px h-6 bg-slate-800 mx-1" />
           <button 
             type="button" 
             onClick={() => {
@@ -347,7 +347,7 @@ const CreatePost: React.FC = () => {
                 editor?.chain().focus().setLink({ href: url }).run();
               }
             }}
-            className={`p-2.5 rounded-xl transition-all ${editor?.isActive('link') ? 'bg-slate-200 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-white'}`}
+            className={`p-2.5 rounded-xl transition-all ${editor?.isActive('link') ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'}`}
           >
            <Code size={18} />
           </button>
@@ -355,7 +355,7 @@ const CreatePost: React.FC = () => {
           <div className="relative group">
             <button 
               type="button" 
-              className={`p-2.5 rounded-xl transition-all ${isUploadingImage ? 'text-emerald-500' : 'text-slate-400 hover:text-slate-900 hover:bg-white'} relative cursor-pointer flex items-center gap-1`}
+              className={`p-2.5 rounded-xl transition-all ${isUploadingImage ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'} relative cursor-pointer flex items-center gap-1`}
               title="Upload Image or enter URL"
             >
               <ImageIcon size={18} />
@@ -384,36 +384,36 @@ const CreatePost: React.FC = () => {
             </button>
           </div>
           
-          <div className="w-px h-6 bg-slate-200 mx-1" />
+          <div className="w-px h-6 bg-slate-800 mx-1" />
           <div className="relative">
             <button 
               type="button" 
               onClick={() => setShowAiImagePrompt(!showAiImagePrompt)} 
-              className="flex items-center gap-2 px-3 py-2 text-emerald-600 font-bold text-xs hover:bg-emerald-50 rounded-xl transition-all whitespace-nowrap"
+              className="flex items-center gap-2 px-3 py-2 text-indigo-400 font-bold text-xs hover:bg-indigo-500/10 rounded-xl transition-all whitespace-nowrap"
             >
               <Sparkles size={14} /> AI Image
             </button>
             {showAiImagePrompt && (
-              <div className="absolute top-10 left-0 bg-white border border-slate-200 shadow-xl p-3 rounded-2xl w-64 z-10 flex flex-col gap-2">
+              <div className="absolute top-10 left-0 bg-[#0A0D14] border border-slate-800 shadow-2xl p-4 rounded-2xl w-64 z-10 flex flex-col gap-3">
                 <input 
                   type="text" 
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
                   placeholder="Describe an image..."
-                  className="w-full text-sm border border-slate-200 px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full text-xs font-medium text-slate-300 bg-[#141A29]/50 border border-slate-700 px-3 py-2.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
                 />
                 <button 
                   onClick={handleInsertAiImage} 
                   disabled={isGeneratingImg || !aiPrompt.trim()}
-                  className="bg-emerald-600 text-white rounded-xl py-2 text-sm font-bold flex justify-center items-center gap-2 hover:bg-emerald-700 disabled:opacity-50"
+                  className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-xl py-2 text-xs font-black uppercase tracking-widest flex justify-center items-center gap-2 hover:bg-indigo-500/20 disabled:opacity-50"
                 >
-                  {isGeneratingImg ? <Loader2 size={16} className="animate-spin" /> : "Generate"}
+                  {isGeneratingImg ? <Loader2 size={16} className="animate-spin text-indigo-400" /> : "Generate"}
                 </button>
               </div>
             )}
           </div>
 
-          <div className="w-px h-6 bg-slate-200 mx-2" />
+          <div className="w-px h-6 bg-slate-800 mx-2" />
           
           {isStory && (
             <button
@@ -422,7 +422,7 @@ const CreatePost: React.FC = () => {
                 const chapterNum = content.split('<h2>').length;
                 editor?.chain().focus().insertContent(`<h2>Chapter ${chapterNum}</h2><p>Start writing chapter ${chapterNum} here...</p>`).run();
               }}
-              className="flex items-center gap-2 px-3 py-2 text-indigo-600 bg-indigo-50 border border-indigo-100 font-bold text-xs rounded-xl transition-all whitespace-nowrap mr-2 hover:bg-indigo-100"
+              className="flex items-center gap-2 px-3 py-2 text-amber-400 bg-amber-500/10 border border-amber-500/20 font-bold text-xs rounded-xl transition-all whitespace-nowrap mr-2 hover:bg-amber-500/20"
             >
               <FileText size={14} /> Add Chapter
             </button>
@@ -432,7 +432,7 @@ const CreatePost: React.FC = () => {
             type="button"
             onClick={() => setEditorMode('preview')}
             className={`flex items-center gap-2 px-3 py-2 text-xs font-bold rounded-xl transition-all whitespace-nowrap ${
-              editorMode === 'preview' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:bg-white'
+              editorMode === 'preview' ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'
             }`}
           >
             <Pencil size={14} /> Rich Edit
@@ -441,7 +441,7 @@ const CreatePost: React.FC = () => {
             type="button"
             onClick={() => setEditorMode('html')}
             className={`flex items-center gap-2 px-3 py-2 text-xs font-bold rounded-xl transition-all whitespace-nowrap ${
-              editorMode === 'html' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:bg-white'
+              editorMode === 'html' ? 'bg-[#141A29] text-indigo-400 shadow-inner' : 'text-slate-500 hover:text-slate-300 hover:bg-[#141A29]'
             }`}
           >
             <Code size={14} /> HTML
@@ -453,10 +453,10 @@ const CreatePost: React.FC = () => {
             value={content}
             onChange={handleHtmlEdit}
             placeholder="Write your article HTML here..."
-            className="w-full text-base md:text-lg text-slate-700 placeholder:text-slate-300 focus:outline-none min-h-[500px] resize-none leading-relaxed font-mono bg-slate-50 border border-slate-100 rounded-2xl p-5"
+            className="w-full text-base md:text-lg text-slate-300 placeholder:text-slate-600 focus:outline-none min-h-[500px] resize-none leading-relaxed font-mono bg-[#141A29]/80 border border-slate-800 rounded-3xl shadow-inner p-6"
           />
         ) : (
-          <div className="min-h-[500px] rounded-3xl border border-slate-100 bg-white p-4 md:p-8 shadow-sm">
+          <div className="min-h-[500px] rounded-3xl border border-slate-800 bg-[#141A29]/50 shadow-inner p-4 md:p-8">
             <EditorContent editor={editor} />
           </div>
         )}
@@ -464,11 +464,11 @@ const CreatePost: React.FC = () => {
 
       {showSettings && (
         <div className="fixed inset-0 z-[100] flex items-center justify-end">
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setShowSettings(false)} />
-          <div className="w-full max-w-md h-full bg-white relative z-10 shadow-2xl p-8 animate-in slide-in-from-right duration-500 overflow-y-auto">
+          <div className="fixed inset-0 bg-[#0A0D14]/80 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setShowSettings(false)} />
+          <div className="w-full max-w-md h-full bg-[#0A0D14] border-l border-slate-800/80 relative z-10 shadow-2xl p-8 animate-in slide-in-from-right duration-500 overflow-y-auto">
             <div className="flex items-center justify-between mb-10">
-              <h3 className="text-2xl font-black text-slate-900">Article Settings</h3>
-              <button onClick={() => setShowSettings(false)} className="p-2 hover:bg-slate-50 rounded-full transition-colors" type="button">
+              <h3 className="text-2xl font-black text-white">Article Settings</h3>
+              <button onClick={() => setShowSettings(false)} className="p-2 hover:bg-slate-800 text-slate-400 rounded-full transition-colors" type="button">
                 <X size={20} />
               </button>
             </div>
@@ -483,7 +483,7 @@ const CreatePost: React.FC = () => {
                       onClick={() => setCategory(cat)}
                       type="button"
                       className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all border ${
-                        category === cat ? 'bg-emerald-50 border-emerald-600 text-emerald-700' : 'bg-slate-50 border-slate-100 text-slate-500'
+                        category === cat ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.2)]' : 'bg-[#141A29]/50 border-slate-800 text-slate-400 hover:bg-slate-800'
                       }`}
                     >
                       {cat}
@@ -498,7 +498,7 @@ const CreatePost: React.FC = () => {
                   value={excerpt}
                   onChange={(e) => setExcerpt(e.target.value)}
                   placeholder="Summary for search and discovery..."
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-emerald-600 outline-none h-24 resize-none"
+                  className="w-full bg-[#1A2234] border border-slate-800 rounded-2xl p-4 text-sm text-slate-200 focus:ring-1 focus:ring-indigo-500/50 outline-none h-24 resize-none placeholder:text-slate-600"
                 />
               </div>
 
@@ -523,36 +523,36 @@ const CreatePost: React.FC = () => {
                         }
                       }}
                       disabled={isUploadingImage}
-                      className="w-full text-sm file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
+                      className="w-full text-sm file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:uppercase file:tracking-widest file:font-black file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 cursor-pointer text-slate-500"
                     />
                   </div>
                   <div className="relative">
-                    <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input
                       type="url"
                       value={featuredImage}
                       onChange={(e) => setFeaturedImage(e.target.value)}
                       placeholder={isUploadingImage ? "Uploading..." : "Or paste image URL https://..."}
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-600 outline-none text-sm"
+                      className="w-full pl-12 pr-4 py-3 bg-[#1A2234] border border-slate-800 text-slate-200 rounded-2xl focus:ring-1 focus:ring-indigo-500/50 outline-none text-sm placeholder:text-slate-600"
                     />
                   </div>
                 </div>
                 {featuredImage && (
-                  <div className="mt-4 rounded-xl overflow-hidden border border-slate-200">
+                  <div className="mt-4 rounded-xl overflow-hidden border border-slate-800">
                     <img src={featuredImage} alt="Preview" className="w-full h-32 object-cover" />
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+              <div className="flex items-center justify-between p-4 bg-[#141A29]/50 border border-slate-800 rounded-2xl shadow-inner">
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-slate-800">Format as Story</label>
+                  <label className="block text-xs font-black uppercase tracking-widest text-white">Format as Story</label>
                   <p className="text-xs text-slate-500 mt-1">Enable chapters and paginated reading mode.</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsStory(!isStory)}
-                  className={`w-12 h-6 rounded-full transition-colors relative ${isStory ? 'bg-emerald-600' : 'bg-slate-300'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative ${isStory ? 'bg-indigo-500' : 'bg-slate-700'}`}
                 >
                   <span className={`absolute top-1 bottom-1 w-4 bg-white rounded-full transition-all ${isStory ? 'left-7' : 'left-1'}`} />
                 </button>
@@ -560,10 +560,10 @@ const CreatePost: React.FC = () => {
             </div>
 
             <div className="mt-12 flex flex-col gap-3">
-              <button onClick={() => handleAction('pending')} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black shadow-xl active:scale-95" type="button">
+              <button onClick={() => handleAction('pending')} className="w-full py-4 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl active:scale-95 transition-all" type="button">
                 Ready to Publish
               </button>
-              <button onClick={() => setShowSettings(false)} className="w-full py-4 text-slate-500 font-bold" type="button">
+              <button onClick={() => setShowSettings(false)} className="w-full py-4 text-slate-500 hover:text-white transition-colors font-black uppercase tracking-widest text-xs" type="button">
                 Back to Editor
               </button>
             </div>

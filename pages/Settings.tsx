@@ -104,24 +104,24 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-20">
+    <div className="max-w-4xl mx-auto space-y-8 pb-20 fade-in animate-in">
       <div>
-        <h1 className="text-3xl font-black text-slate-900 mb-2">Account Settings</h1>
-        <p className="text-slate-500">Manage your profile, security, and preferences.</p>
+        <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight drop-shadow-md">System Parameters</h1>
+        <p className="text-slate-400 font-medium tracking-wide">Manage your node credentials, security, and global preferences.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           {/* Profile Settings */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
+            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
               <User size={20} className="text-emerald-600" /> Profile Information
             </h2>
             <form onSubmit={handleSaveProfile} className="space-y-6">
               <div className="flex items-center gap-6 mb-8">
-                <img src={user?.avatar} alt="Avatar" className="w-20 h-20 rounded-2xl bg-slate-100" />
+                <img src={user?.avatar} alt="Avatar" className="w-20 h-20 rounded-2xl bg-[#141A29]/50 border border-slate-700" />
                 <div>
-                  <button type="button" className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors">
+                  <button type="button" className="px-4 py-2 bg-[#1A2234] hover:bg-[#141A29] text-slate-300 border border-slate-700 rounded-xl text-sm font-bold transition-colors">
                     Change Avatar
                   </button>
                   <p className="text-xs text-slate-500 mt-2">JPG, GIF or PNG. Max size of 800K</p>
@@ -135,7 +135,7 @@ const Settings: React.FC = () => {
                     type="text" 
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -144,13 +144,13 @@ const Settings: React.FC = () => {
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div className="flex justify-end pt-4">
-                <button type="submit" className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-colors flex items-center gap-2">
+                <button type="submit" className="px-6 py-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 rounded-xl font-black transform transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest text-xs">
                   <Save size={18} /> Save Changes
                 </button>
               </div>
@@ -158,8 +158,8 @@ const Settings: React.FC = () => {
           </div>
 
           {/* Security Settings */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
+            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
               <Shield size={20} className="text-emerald-600" /> Security
             </h2>
             <form onSubmit={handleSaveSecurity} className="space-y-6">
@@ -169,7 +169,7 @@ const Settings: React.FC = () => {
                   type="password" 
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
                 />
               </div>
               <div>
@@ -178,12 +178,12 @@ const Settings: React.FC = () => {
                   type="password" 
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
                 />
               </div>
 
               <div className="flex justify-end pt-4">
-                <button type="submit" className="px-6 py-3 bg-slate-900 hover:bg-black text-white rounded-xl font-bold transition-colors flex items-center gap-2">
+                <button type="submit" className="px-6 py-3 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 uppercase tracking-widest text-xs font-black flex items-center gap-2">
                   <Lock size={18} /> Update Password
                 </button>
               </div>
@@ -191,8 +191,8 @@ const Settings: React.FC = () => {
           </div>
 
           {/* Payout Methods */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
+            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
               <CreditCard size={20} className="text-emerald-600" /> Payout Methods
             </h2>
             <form onSubmit={handleSavePayouts} className="space-y-6">
@@ -206,7 +206,7 @@ const Settings: React.FC = () => {
                   value={payouts.opayAccount}
                   onChange={(e) => setPayouts(prev => ({...prev, opayAccount: e.target.value}))}
                   placeholder="e.g. John Doe - 8123456789"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all mb-2"
+                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all mb-2"
                 />
                 {!payouts.opayAccount && (
                   <p className="text-xs text-slate-500">
@@ -225,7 +225,7 @@ const Settings: React.FC = () => {
                   value={payouts.usdtWallet}
                   onChange={(e) => setPayouts(prev => ({...prev, usdtWallet: e.target.value}))}
                   placeholder="T..."
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
                 />
               </div>
 
@@ -239,7 +239,7 @@ const Settings: React.FC = () => {
                   value={payouts.minipayDetails}
                   onChange={(e) => setPayouts(prev => ({...prev, minipayDetails: e.target.value}))}
                   placeholder="UID..."
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all mb-2"
+                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all mb-2"
                 />
                 {!payouts.minipayDetails && (
                   <p className="text-xs text-slate-500">
@@ -259,13 +259,13 @@ const Settings: React.FC = () => {
                   value={payoutPin}
                   onChange={(e) => setPayoutPin(e.target.value.replace(/\D/g, ''))}
                   placeholder="e.g. 1234"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all tracking-[0.5em] font-mono text-xl mb-2"
+                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all tracking-[0.5em] font-mono text-xl mb-2"
                 />
                 <p className="text-xs text-rose-500 font-bold">Never share this PIN! It is required to approve all withdrawals.</p>
               </div>
 
               <div className="flex justify-end pt-4">
-                <button type="submit" className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-colors flex items-center gap-2">
+                <button type="submit" className="px-6 py-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 rounded-xl font-black transform transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest text-xs">
                   <Save size={18} /> Save Payout Methods
                 </button>
               </div>
@@ -275,53 +275,53 @@ const Settings: React.FC = () => {
 
         <div className="space-y-8">
           {/* Notifications */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
+            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
               <Bell size={20} className="text-emerald-600" /> Notifications
             </h2>
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold text-slate-900">Email Alerts</p>
+                  <p className="font-black text-white">Email Alerts</p>
                   <p className="text-xs text-slate-500">Receive updates via email</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" checked={notifications.emailAlerts} onChange={() => setNotifications(prev => ({...prev, emailAlerts: !prev.emailAlerts}))} />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold text-slate-900">Push Notifications</p>
+                  <p className="font-black text-white">Push Notifications</p>
                   <p className="text-xs text-slate-500">In-app alerts</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" checked={notifications.pushNotifications} onChange={() => setNotifications(prev => ({...prev, pushNotifications: !prev.pushNotifications}))} />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold text-slate-900">Weekly Digest</p>
+                  <p className="font-black text-white">Weekly Digest</p>
                   <p className="text-xs text-slate-500">Summary of your activity</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" checked={notifications.weeklyDigest} onChange={() => setNotifications(prev => ({...prev, weeklyDigest: !prev.weeklyDigest}))} />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
                 </label>
               </div>
             </div>
           </div>
 
           {/* Preferences */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
+            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
               <Globe size={20} className="text-emerald-600" /> Preferences
             </h2>
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Language</label>
-                <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all appearance-none">
+                <select className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all appearance-none">
                   <option>English (US)</option>
                   <option>French</option>
                   <option>Spanish</option>
@@ -329,7 +329,7 @@ const Settings: React.FC = () => {
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Timezone</label>
-                <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none transition-all appearance-none">
+                <select className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all appearance-none">
                   <option>UTC (GMT+0)</option>
                   <option>EST (GMT-5)</option>
                   <option>PST (GMT-8)</option>

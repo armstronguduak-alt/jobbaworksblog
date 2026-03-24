@@ -63,7 +63,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, plan }) =>
             </div>
             <div className="flex items-center justify-between text-sm mb-2">
               <span className="text-slate-500">Billing</span>
-              <span className="font-bold text-slate-900">Monthly</span>
+              <span className="font-bold text-slate-900">One-time Lifetime</span>
             </div>
             <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
               <span className="font-bold text-slate-900">Total</span>

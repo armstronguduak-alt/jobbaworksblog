@@ -91,6 +91,7 @@ export type Category = string;
 
 export interface PostAuthor {
   name: string;
+  username?: string;
   avatar: string;
   bio?: string;
 }

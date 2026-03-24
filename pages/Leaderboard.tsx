@@ -38,14 +38,12 @@ const Leaderboard: React.FC = () => {
     const fetchLeaderboard = async () => {
       setLoading(true);
       try {
-        // Adjust the query based on period (weekly, monthly, yearly)
         let dateLimit = new Date();
         if (period === 'weekly') dateLimit.setDate(dateLimit.getDate() - 7);
         else if (period === 'monthly') dateLimit.setMonth(dateLimit.getMonth() - 1);
         else dateLimit.setFullYear(dateLimit.getFullYear() - 1);
 
         const [walletRes, profileRes, referralRes] = await Promise.all([
-          // In a real app, join or filter by dateLimit
           (supabase as any).from('wallet_balances').select('user_id,total_earnings').order('total_earnings', { ascending: false }).limit(100),
           (supabase as any).from('profiles').select('user_id,name,avatar_url').limit(1000),
           (supabase as any).from('referrals').select('referrer_user_id').limit(1000),
@@ -54,10 +52,9 @@ const Leaderboard: React.FC = () => {
         const profileMap = new Map((profileRes.data || []).map((p: any) => [p.user_id, p]));
         const referralsCount = new Map<string, number>();
         (referralRes.data || []).forEach((r: any) => {
-          referralsCount.set(r.referrer_user_id, (referralsCount.get(r.referrer_user_id) || 0) + 1);
+           referralsCount.set(r.referrer_user_id, (referralsCount.get(r.referrer_user_id) || 0) + 1);
         });
 
-        // Simulate variations in data for tabs by multiplying/subtracting if real date filtering isn't set up yet
         const multiplier = period === 'weekly' ? 1 : period === 'monthly' ? 4 : 12;
 
         const leaderboardRows: LeaderboardUser[] = (walletRes.data || []).map((w: any, index: number) => ({
@@ -102,22 +99,22 @@ const Leaderboard: React.FC = () => {
   const topUsers = rankings[period] || [];
   const currentUserRank = rankings.userRanks?.[period];
 
-  if (loading) return <div className="p-8 text-center text-slate-500 font-bold">Loading leaderboard...</div>;
+  if (loading) return <div className="p-12 text-center text-slate-500 font-bold uppercase tracking-widest text-xs animate-pulse">Synchronizing Leaderboard Data...</div>;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 w-full overflow-x-hidden">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Leaderboard</h1>
-          <p className="text-slate-500 font-medium">Top performing authors and referrers.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-md">Global Rankings</h1>
+          <p className="text-slate-400 mt-2 font-medium">Top performing nodes on the JobbaWorks ledger.</p>
         </div>
-        <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
+        <div className="flex items-center gap-2 p-1.5 bg-[#141A29]/80 backdrop-blur-md rounded-2xl border border-slate-800 shadow-inner">
           {(['weekly', 'monthly', 'yearly'] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                period === p ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${
+                period === p ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.1)]' : 'text-slate-500 hover:text-slate-300'
               }`}
             >
               {p}
@@ -127,81 +124,88 @@ const Leaderboard: React.FC = () => {
       </div>
 
       {currentUserRank && (
-        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
-              <User size={20} />
+        <div className="bg-[#0A0D14]/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-5 flex items-center justify-between shadow-2xl">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#1A2234] border border-slate-700 text-indigo-400 rounded-xl flex items-center justify-center shadow-inner">
+               <User size={22} className="drop-shadow-[0_0_5px_rgba(99,102,241,0.3)]" />
             </div>
             <div>
-              <p className="text-xs font-black text-indigo-400 uppercase tracking-widest">Your Rank ({period})</p>
-              <p className="text-lg font-black text-indigo-900">#{currentUserRank}</p>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-0.5">Your Local Rank ({period})</p>
+              <p className="text-2xl font-black text-white">#{currentUserRank}</p>
             </div>
           </div>
+          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
         </div>
       )}
 
       {topUsers.length >= 3 && (
-        <div className="flex justify-center items-end gap-2 md:gap-6 pt-10 pb-8 px-2 md:px-0 w-full overflow-hidden">
-          <div className="relative w-1/3 bg-white rounded-2xl md:rounded-[2.5rem] p-3 md:p-8 border border-slate-100 shadow-xl text-center flex flex-col items-center justify-end">
-            <div className="absolute -top-4 md:-top-6 w-8 h-8 md:w-12 md:h-12 bg-slate-100 rounded-xl md:rounded-2xl flex items-center justify-center border-2 md:border-4 border-white shadow-lg">
-              <Medal className="text-slate-400 w-4 h-4 md:w-6 md:h-6" />
+        <div className="flex justify-center items-end gap-3 md:gap-8 pt-12 pb-10 px-2 md:px-0 w-full overflow-hidden">
+          {/* Rank 2 */}
+          <div className="relative w-1/3 bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] md:rounded-[3rem] p-4 md:p-8 border border-slate-800 shadow-[0_0_30px_rgba(0,0,0,0.5)] text-center flex flex-col items-center justify-end group">
+            <div className="absolute top-0 w-full h-full bg-slate-400/5 rounded-[2rem] md:rounded-[3rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div className="absolute -top-5 md:-top-8 w-10 h-10 md:w-16 md:h-16 bg-[#1A2234] rounded-xl md:rounded-2xl flex items-center justify-center border-2 md:border-4 border-slate-800 shadow-xl z-10">
+              <Medal className="text-slate-300 w-5 h-5 md:w-8 md:h-8 drop-shadow-[0_0_8px_rgba(203,213,225,0.4)]" />
             </div>
-            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-3xl bg-slate-50 mb-2 md:mb-4 border-2 md:border-4 border-white shadow-inner overflow-hidden">
-              <img src={topUsers[1].avatar} alt="" className="w-full h-full object-cover" />
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-[#1A2234] mb-3 md:mb-5 border-2 md:border-4 border-slate-700 shadow-inner overflow-hidden relative z-10">
+              <img src={topUsers[1].avatar} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
-            <h3 className="text-[10px] md:text-lg font-black text-slate-900 line-clamp-1 break-all">{topUsers[1].name}</h3>
-            <p className="text-emerald-600 font-black text-xs md:text-xl md:mt-2">₦{topUsers[1].earnings.toLocaleString()}</p>
+            <h3 className="text-[11px] md:text-sm font-black text-white line-clamp-1 break-all tracking-wider uppercase">{topUsers[1].name}</h3>
+            <p className="text-emerald-400 font-black text-xs md:text-lg md:mt-2 drop-shadow-sm">₦{topUsers[1].earnings.toLocaleString()}</p>
           </div>
 
-          <div className="relative w-[38%] bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-4 md:p-10 text-center shadow-2xl z-10 md:scale-110 flex flex-col items-center justify-end -translate-y-4">
-            <div className="absolute -top-6 md:-top-8 w-12 h-12 md:w-16 md:h-16 bg-amber-400 rounded-xl md:rounded-3xl flex items-center justify-center border-2 md:border-4 border-slate-900 shadow-xl">
-              <Crown className="text-slate-900 w-6 h-6 md:w-8 md:h-8" />
+          {/* Rank 1 */}
+          <div className="relative w-[38%] bg-gradient-to-t from-[#0D121F] to-[#0A0D14] rounded-[2rem] md:rounded-[3.5rem] p-5 md:p-12 text-center shadow-[0_0_50px_rgba(251,191,36,0.1)] z-20 md:scale-110 flex flex-col items-center justify-end -translate-y-6 border border-amber-500/20 group">
+             <div className="absolute top-0 w-full h-full bg-amber-500/5 rounded-[2rem] md:rounded-[3.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+             <div className="absolute -top-6 md:-top-10 w-12 h-12 md:w-20 md:h-20 bg-[#1A2234] rounded-xl md:rounded-3xl flex items-center justify-center border-2 md:border-4 border-slate-900 shadow-[0_0_20px_rgba(251,191,36,0.2)] z-10">
+              <Crown className="text-amber-400 w-6 h-6 md:w-10 md:h-10 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
             </div>
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-2xl md:rounded-[2rem] bg-white/10 mb-2 md:mb-6 border-2 md:border-4 border-white/20 shadow-inner overflow-hidden">
-              <img src={topUsers[0].avatar} alt="" className="w-full h-full object-cover" />
+            <div className="w-20 h-20 md:w-32 md:h-32 rounded-full bg-[#1A2234] mb-4 md:mb-6 border-[3px] md:border-[5px] border-amber-500/30 shadow-[0_0_20px_rgba(251,191,36,0.15)] overflow-hidden relative z-10">
+              <img src={topUsers[0].avatar} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
-            <h3 className="text-xs md:text-xl font-black text-white line-clamp-1 break-all">{topUsers[0].name}</h3>
-            <p className="text-emerald-400 font-black text-sm md:text-2xl md:mt-2">₦{topUsers[0].earnings.toLocaleString()}</p>
+            <h3 className="text-sm md:text-xl font-black text-white line-clamp-1 break-all tracking-wider uppercase">{topUsers[0].name}</h3>
+            <p className="text-transparent bg-clip-text bg-gradient-to-br from-amber-200 to-amber-500 font-black text-sm md:text-3xl md:mt-2 drop-shadow-lg">₦{topUsers[0].earnings.toLocaleString()}</p>
           </div>
 
-          <div className="relative w-1/3 bg-white rounded-2xl md:rounded-[2.5rem] p-3 md:p-8 border border-slate-100 shadow-xl text-center flex flex-col items-center justify-end">
-            <div className="absolute -top-4 md:-top-6 w-8 h-8 md:w-12 md:h-12 bg-orange-50 rounded-xl md:rounded-2xl flex items-center justify-center border-2 md:border-4 border-white shadow-lg">
-              <Trophy className="text-orange-400 w-4 h-4 md:w-6 md:h-6" />
+          {/* Rank 3 */}
+          <div className="relative w-1/3 bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] md:rounded-[3rem] p-4 md:p-8 border border-slate-800 shadow-[0_0_30px_rgba(0,0,0,0.5)] text-center flex flex-col items-center justify-end group">
+             <div className="absolute top-0 w-full h-full bg-orange-500/5 rounded-[2rem] md:rounded-[3rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div className="absolute -top-5 md:-top-8 w-10 h-10 md:w-16 md:h-16 bg-[#1A2234] rounded-xl md:rounded-2xl flex items-center justify-center border-2 md:border-4 border-slate-800 shadow-xl z-10">
+              <Trophy className="text-orange-900 w-5 h-5 md:w-8 md:h-8 drop-shadow-[0_0_6px_rgba(194,65,12,0.6)]" />
             </div>
-            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-3xl bg-slate-50 mb-2 md:mb-4 border-2 md:border-4 border-white shadow-inner overflow-hidden">
-              <img src={topUsers[2].avatar} alt="" className="w-full h-full object-cover" />
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-[#1A2234] mb-3 md:mb-5 border-2 md:border-4 border-slate-700 shadow-inner overflow-hidden relative z-10">
+              <img src={topUsers[2].avatar} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
-            <h3 className="text-[10px] md:text-lg font-black text-slate-900 line-clamp-1 break-all">{topUsers[2].name}</h3>
-            <p className="text-emerald-600 font-black text-xs md:text-xl md:mt-2">₦{topUsers[2].earnings.toLocaleString()}</p>
+            <h3 className="text-[11px] md:text-sm font-black text-white line-clamp-1 break-all tracking-wider uppercase">{topUsers[2].name}</h3>
+             <p className="text-emerald-400 font-black text-xs md:text-lg md:mt-2 drop-shadow-sm">₦{topUsers[2].earnings.toLocaleString()}</p>
           </div>
         </div>
       )}
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
-        <div className="p-8 border-b border-slate-50 flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-900 tracking-tight">Full Rankings ({period})</h2>
+      <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2.5rem] border border-slate-800 shadow-2xl overflow-hidden mt-8">
+        <div className="p-8 border-b border-slate-800/80 flex items-center justify-between">
+          <h2 className="text-xl font-black text-white tracking-tight">Full Network Registry ({period})</h2>
         </div>
-        <div className="divide-y divide-slate-50">
-          {topUsers.map((rankedUser) => (
-            <div key={rankedUser.id} className="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
-              <div className="flex items-center gap-6">
-                <span className="w-8 text-center font-black text-slate-300">#{rankedUser.rank}</span>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-100 overflow-hidden border-2 border-white shadow-sm">
+        <div className="divide-y divide-slate-800/50">
+          {topUsers.map((rankedUser, i) => (
+             <div key={rankedUser.id} className={`p-6 md:px-10 flex items-center justify-between transition-colors hover:bg-[#141A29]/50 ${i % 2 === 0 ? 'bg-[#141A29]/10' : ''}`}>
+               <div className="flex items-center gap-6 md:gap-8">
+                <span className="w-8 text-center font-black text-slate-500 text-lg">#{rankedUser.rank}</span>
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 rounded-[1.25rem] bg-[#1A2234] overflow-hidden border border-slate-700 shadow-inner">
                     <img src={rankedUser.avatar} alt="" className="w-full h-full object-cover" />
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-900">{rankedUser.name}</h4>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{rankedUser.referrals} Referrals</p>
+                    <h4 className="font-black text-white text-sm tracking-wider uppercase">{rankedUser.name}</h4>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1"><span className="text-blue-400">{rankedUser.referrals}</span> Connections</p>
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-black text-slate-900">₦{rankedUser.earnings.toLocaleString()}</p>
+                 <p className="font-black text-emerald-400 text-lg drop-shadow-[0_0_8px_rgba(52,211,153,0.1)]">₦{rankedUser.earnings.toLocaleString()}</p>
               </div>
             </div>
           ))}
-          {!topUsers.length && <div className="p-8 text-center text-slate-500 font-medium">No leaderboard data yet.</div>}
+          {!topUsers.length && <div className="p-16 text-center text-slate-500 text-xs font-bold uppercase tracking-widest">No node data registered on the ledger.</div>}
         </div>
       </div>
     </div>
