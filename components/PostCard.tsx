@@ -2,80 +2,67 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Post } from '../types';
+import { Bookmark } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface PostCardProps {
   post: Post;
-  variant?: 'large' | 'small' | 'minimal';
+  variant?: 'featured' | 'standard';
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, variant = 'large' }) => {
-  if (variant === 'minimal') {
-    return (
-      <Link to={`/post/${post.slug}`} className="group flex gap-6 items-start py-6 border-b border-slate-100 last:border-0">
-        <span className="text-4xl font-black text-slate-100 group-hover:text-emerald-600 transition-all duration-500 mono-text">0{post.id}</span>
-        <div>
-          <h4 className="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight text-lg">
-            {post.title}
-          </h4>
-          <div className="mt-2 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <span>{post.author.name} {post.author.username ? `@${post.author.username}` : ''}</span>
-            <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
-            <span>{post.publishDate}</span>
-          </div>
-        </div>
-      </Link>
-    );
-  }
+const PostCard: React.FC<PostCardProps> = ({ post, variant = 'standard' }) => {
+  const { user } = useAuth();
+  // We'll mimic the static standard rate of $0.85 as seen on the designs, or display standard platform earnings. N500.00
+  const rewardText = `₦250.00`;
 
   return (
-    <article className={`group flex flex-col ${variant === 'large' ? 'md:flex-row' : ''} gap-8 py-10 border-b border-slate-100 last:border-0 animate-fade-in`}>
-      <Link 
-        to={`/post/${post.slug}`} 
-        className={`shrink-0 overflow-hidden rounded-[2rem] ${variant === 'large' ? 'md:w-2/5' : 'w-full'}`}
-      >
+    <article className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow animate-fade-in relative max-w-sm w-full mx-auto md:max-w-none hover:border-green-200">
+      <Link to={`/post/${post.slug}`} className="block relative w-full aspect-[16/10] overflow-hidden bg-slate-100">
         <img 
           src={post.featuredImage} 
           alt={post.title}
-          className="aspect-[16/10] w-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
         />
+        {post.trending && (
+          <div className="absolute top-4 left-4 bg-[#047857] text-white px-3 py-1 text-[10px] font-bold rounded-full uppercase tracking-widest shadow-sm">
+            Featured
+          </div>
+        )}
       </Link>
-      <div className="flex flex-col justify-between flex-1 py-2">
-        <div>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-[0.15em]">
-              {post.category}
-            </span>
-            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{post.readingTime}</span>
-          </div>
-          <Link to={`/post/${post.slug}`}>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-4 group-hover:text-emerald-600 transition-colors leading-[1.15] tracking-tight">
-              {post.title}
-            </h2>
-          </Link>
-          <p className="text-slate-500 line-clamp-2 mb-6 text-base md:text-lg leading-relaxed serif-text">
-            {post.excerpt}
-          </p>
+      
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[11px] font-bold text-[#047857] uppercase tracking-widest">
+            {post.category}
+          </span>
+          <span className="text-slate-300 font-bold text-[10px]">•</span>
+          <span className="text-[11px] font-bold text-slate-500">{post.readingTime}</span>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <img src={post.author.avatar} alt={post.author.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm" />
-              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
+        
+        <Link to={`/post/${post.slug}`}>
+          <h2 className="text-[20px] font-bold text-[#111827] leading-tight mb-3 group-hover:text-[#16A34A] transition-colors tracking-tight">
+            {post.title}
+          </h2>
+        </Link>
+        
+        <p className="text-[14px] text-slate-500 leading-relaxed line-clamp-2 mb-6 flex-1 font-medium">
+          {post.excerpt}
+        </p>
+        
+        <div className="flex items-center justify-between mt-auto">
+          {/* ONLY show reward if a user is logged in (To prevent Google Flagging) */}
+          {user ? (
+            <div className="bg-[#DCFCE7] text-[#16A34A] px-3 py-1.5 rounded-full text-[12px] font-extrabold flex items-center gap-1.5 font-mono shadow-[inset_0_1px_2px_rgba(22,163,74,0.1)]">
+              <div className="w-3.5 h-3.5 bg-[#16A34A] rounded-full flex items-center justify-center text-white text-[9px] font-bold sm:hidden md:flex">₦</div>
+              {rewardText}
             </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-900">{post.author.name} {post.author.username ? <span className="text-slate-500 font-medium">@{post.author.username}</span> : ''}</span>
-              <span className="text-[10px] font-medium text-slate-400">{post.publishDate}</span>
-            </div>
-          </div>
-          <Link 
-            to={`/post/${post.slug}`}
-            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 group-hover:border-emerald-600 group-hover:text-emerald-600 transition-all"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3.33334 8H12.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M8 3.33334L12.6667 8L8 12.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </Link>
+          ) : (
+             <div className="w-10"></div>
+          )}
+
+          <button className="text-[#6B7280] hover:text-[#047857] hover:bg-green-50 p-2 rounded-full transition-colors w-10 h-10 flex items-center justify-center -mr-2">
+             <Bookmark size={20} className="stroke-[1.5]" />
+          </button>
         </div>
       </div>
     </article>

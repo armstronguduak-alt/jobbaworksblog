@@ -18,7 +18,7 @@ import {
 
 const PostDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { user, stats, posts, addReward, submitCommentWithReward, setLimitModalShown, systemPlans } = useAuth();
+  const { user, stats, posts, addReward, submitCommentWithReward, setLimitModalShown, systemPlans, viewPost } = useAuth();
   const [insight, setInsight] = useState<string | null>(null);
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(25);
@@ -28,6 +28,9 @@ const PostDetail: React.FC = () => {
   const [limitModalMessage, setLimitModalMessage] = useState<string | undefined>(undefined);
   const [commentText, setCommentText] = useState('');
   const [isCommentSubmitting, setIsCommentSubmitting] = useState(false);
+
+  // Use a ref to prevent double counting in strict mode
+  const hasViewedRef = useRef(false);
 
   const post = posts.find((p) => p.slug === slug);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -44,8 +47,13 @@ const PostDetail: React.FC = () => {
     if (post) {
       window.scrollTo(0, 0);
       getPostInsights(post.title, post.chapters[0]?.content || '').then((res) => setInsight(res));
+      
+      if (!hasViewedRef.current) {
+         viewPost(post.id);
+         hasViewedRef.current = true;
+      }
     }
-  }, [post]);
+  }, [post, viewPost]);
 
   useEffect(() => {
     if (user && activeChapter && !hasReadingReward && !readingLimitReached) {
@@ -246,9 +254,11 @@ const PostDetail: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg">
-              <Info size={12} /> Earn ₦{plan.commentReward.toFixed(2)} per meaningful comment
-            </div>
+            {user && (
+              <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg">
+                <Info size={12} /> Earn ₦{plan.commentReward.toFixed(2)} per meaningful comment
+              </div>
+            )}
           </div>
 
           <div className="bg-slate-50 p-6 rounded-3xl mb-8">

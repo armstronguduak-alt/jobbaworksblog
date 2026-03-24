@@ -49,7 +49,7 @@ const Register: React.FC = () => {
     const checkUsername = async () => {
       setCheckingUsername(true);
       const cleanUsername = username.trim().toLowerCase();
-      const { data, error } = await (supabase as any)
+      const { data } = await (supabase as any)
         .from('profiles')
         .select('username')
         .eq('username', cleanUsername)
@@ -85,103 +85,66 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-sans">
-      {/* Left Panel - Dark Fintech Branding (Hidden on Mobile) */}
-      <div className="hidden lg:flex w-1/2 bg-slate-900 border-r border-slate-800 flex-col justify-between p-12 relative overflow-hidden fixed top-0 left-0 bottom-0">
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/10 blur-[100px]" />
-          <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/10 blur-[120px]" />
-        </div>
-
-        <div className="relative z-10">
-          <Link to="/" className="inline-flex items-center gap-3">
-            <img src="/logo.png" alt="JobbaWorks Logo" className="w-10 h-10 rounded-xl object-cover ring-2 ring-emerald-500/20" />
-            <span className="text-2xl font-black tracking-tight text-white">
-              <span className="text-emerald-500">Jobba</span>Works
+    <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-4 font-sans py-12">
+      <div className="w-full max-w-lg">
+        <div className="flex justify-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2">
+            <img src="/logo.png" alt="JobbaWorks Logo" className="w-10 h-10 rounded-xl object-cover" />
+            <span className="text-2xl font-bold tracking-tight text-[#111827]">
+              JobbaWorks
             </span>
           </Link>
         </div>
 
-        <div className="relative z-10 max-w-md">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
-             <Gift size={12} /> Sustainable Rewards
-          </div>
-          <h1 className="text-5xl font-black text-white leading-[1.1] mb-6 tracking-tight">
-            Read, engaging, <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-indigo-400">earn crypto & flat.</span>
-          </h1>
-          <p className="text-lg text-slate-400 font-medium leading-relaxed">
-            Create your account to unlock daily earning quotas. Read authenticated content, comment to earn, and withdraw instantly to your local bank.
-          </p>
-        </div>
-
-        <div className="relative z-10 flex items-center gap-4 text-xs font-bold text-slate-500">
-          <span className="flex items-center gap-1"><Lock size={14} /> PCI-DSS Compliant</span>
-          <span className="w-1 h-1 rounded-full bg-slate-700"></span>
-          <span>Regulated Operations</span>
-        </div>
-      </div>
-
-      {/* Right Panel - Scrollable Form */}
-      <div className="w-full lg:w-1/2 lg:ml-auto flex flex-col p-6 sm:p-12 relative bg-white min-h-screen">
-        <div className="w-full max-w-[420px] mx-auto flex-1 flex flex-col justify-center">
-          <div className="lg:hidden flex items-center justify-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <img src="/logo.png" alt="JobbaWorks" className="w-8 h-8 rounded-lg object-cover" />
-              <span className="text-xl font-black tracking-tight">
-                <span className="text-emerald-600">Jobba</span><span className="text-slate-900">Works</span>
-              </span>
-            </Link>
-          </div>
-
-          <div className="mb-10 text-center lg:text-left">
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h2>
-            <p className="text-slate-500 font-medium mt-2">Join the next-gen reading ecosystem.</p>
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 sm:p-10">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Create Account</h2>
+            <p className="text-sm text-[#6B7280] mt-2">Join the next-gen platform.</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-rose-50/50 text-rose-700 border border-rose-100/50 rounded-2xl text-sm font-bold flex items-start gap-3">
+            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium flex items-start gap-3">
               <div className="shrink-0 mt-0.5"><Lock size={16} /></div>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 text-left">
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-[#111827] mb-2">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={18} />
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="John Doe"
-                  className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Username</label>
+                <label className="block text-sm font-medium text-[#111827] mb-2">Username</label>
                 <div className="relative flex flex-col">
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={18} />
                     <input
                       type="text"
                       required
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder="johndoe"
-                      className={`w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:bg-white transition-all text-slate-900 font-medium text-sm ${
-                        usernameAvailable === false ? 'border-rose-300 focus:ring-rose-500' : 'focus:ring-emerald-500'
+                      className={`w-full pl-11 pr-4 py-3 bg-white border rounded-xl focus:outline-none focus:ring-2 transition-all text-[#111827] text-sm ${
+                        usernameAvailable === false ? 'border-red-300 focus:ring-red-200 focus:border-red-400' : 'border-slate-200 focus:ring-[#16A34A]/20 focus:border-[#16A34A]'
                       }`}
                     />
                   </div>
                   {username.trim().length >= 3 && (
-                    <p className={`text-[10px] mt-1.5 font-bold uppercase tracking-wide px-1 ${
-                      checkingUsername ? 'text-slate-400' : usernameAvailable ? 'text-emerald-600' : 'text-rose-600'
+                    <p className={`text-[11px] mt-1.5 font-semibold px-1 ${
+                      checkingUsername ? 'text-[#6B7280]' : usernameAvailable ? 'text-[#16A34A]' : 'text-red-600'
                     }`}>
                       {checkingUsername ? 'Checking...' : usernameAvailable ? 'Available' : 'Taken'}
                     </p>
@@ -190,12 +153,12 @@ const Register: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Gender</label>
+                <label className="block text-sm font-medium text-[#111827] mb-2">Gender</label>
                 <select
                   required
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full px-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm appearance-none"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm appearance-none"
                 >
                   <option value="" disabled>Select</option>
                   <option value="Male">Male</option>
@@ -206,24 +169,24 @@ const Register: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Email</label>
+              <label className="block text-sm font-medium text-[#111827] mb-2">Email address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={18} />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Phone Number</label>
+              <label className="block text-sm font-medium text-[#111827] mb-2">Phone Number</label>
               <div className="relative flex items-center">
-                <div className="absolute left-4 flex items-center gap-2 text-slate-500 font-black text-sm">
+                <div className="absolute left-4 flex items-center gap-2 text-[#6B7280] font-semibold text-sm">
                   <span>+234</span>
                 </div>
                 <input
@@ -232,27 +195,27 @@ const Register: React.FC = () => {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                   placeholder="801 234 5678"
-                  className="w-full pl-[4.5rem] pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm"
+                  className="w-full pl-[4.5rem] pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Password</label>
+              <label className="block text-sm font-medium text-[#111827] mb-2">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={18} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-12 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm tracking-widest"
+                  className="w-full pl-11 pr-12 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm tracking-widest"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -260,37 +223,37 @@ const Register: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Referral Code (Optional)</label>
+              <label className="block text-sm font-medium text-[#111827] mb-2">Referral Code (Optional)</label>
               <div className="relative">
-                <Gift className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Gift className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={18} />
                 <input
                   type="text"
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                   placeholder="CODE"
-                  className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm uppercase"
+                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm uppercase"
                 />
               </div>
-              {referrerName && <p className="mt-2 text-[11px] font-bold text-emerald-600 px-1">Referring Agent: {referrerName}</p>}
+              {referrerName && <p className="mt-2 text-xs font-semibold text-[#16A34A] px-1">Referring Agent: {referrerName}</p>}
             </div>
 
-            <p className="text-[10px] uppercase font-bold text-slate-400 text-center px-4 pt-2">
-              By registering, you accept our <Link to="/terms" className="text-emerald-600">Terms of Service</Link>.
+            <p className="text-xs font-medium text-[#6B7280] text-center px-4 py-2">
+              By registering, you accept our <Link to="/terms" className="text-[#16A34A] hover:underline">Terms of Service</Link>.
             </p>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 mt-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black uppercase tracking-widest text-[11px] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)]"
+              className="w-full py-3 mt-2 bg-[#16A34A] hover:bg-green-700 text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Initializing...' : 'Create Secure Vault'}
-              {!loading && <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />}
+              {loading ? 'Initializing...' : 'Create Account'}
+              {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 
-          <div className="mt-8 text-center border-t border-slate-100 pt-8">
-            <p className="text-[13px] font-medium text-slate-500">
-              Already have an account? <Link to="/login" className="text-slate-900 font-black hover:text-emerald-600 transition-colors">Sign In here</Link>
+          <div className="mt-8 text-center border-t border-slate-100 pt-6">
+            <p className="text-sm font-medium text-[#6B7280]">
+              Already have an account? <Link to="/login" className="text-[#16A34A] font-semibold hover:text-green-700 transition-colors">Sign in here</Link>
             </p>
           </div>
         </div>

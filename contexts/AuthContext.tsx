@@ -47,6 +47,7 @@ interface AuthContextType {
   updatePageToggles: (toggles: Record<string, boolean>) => Promise<void>;
   deletePost: (postId: string) => Promise<void>;
   generateArticleFromTopic: (topic: string, category: string) => Promise<{ success: boolean; message: string }>;
+  viewPost: (postId: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -216,6 +217,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isHighValue: false,
         isStory: p.is_story || false,
         authorEarningsClaimed: p.author_earnings_claimed || false,
+        views: p.views || 0,
         aiModeration: p.moderation_summary
           ? {
               grammarScore: 90,
@@ -1023,6 +1025,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await hydratePosts(user.id, user.role);
   };
 
+  const viewPost = async (postId: string) => {
+    try {
+      const { data, error } = await supabase.rpc('process_article_view', { p_post_id: postId });
+      if (!error && data?.success) {
+        setPosts(prev => prev.map(p => p.id === postId ? { ...p, views: data.views } : p));
+      }
+    } catch (err) {
+      console.error('Failed to process article view:', err);
+    }
+  };
+
   const generateArticleFromTopic = async (topic: string, category: string) => {
     if (!user) return { success: false, message: 'Not authenticated' };
 
@@ -1111,6 +1124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatePageToggles,
         deletePost,
         generateArticleFromTopic,
+        viewPost,
       }}
     >
       {children}

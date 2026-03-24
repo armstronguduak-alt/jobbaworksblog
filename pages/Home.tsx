@@ -74,120 +74,96 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen font-sans">
+    <div className="bg-[#FFFFFF] min-h-screen font-sans">
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-16">
-        {query ? (
-          <div className="mb-16 bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
-            <h1 className="text-4xl font-black text-slate-900 mb-4 tracking-tight">Search results for "{query}"</h1>
-            <p className="text-slate-500 serif-text text-lg">{filteredPosts.length} matches found in the ecosystem</p>
-          </div>
-        ) : (
-          !activeCategory && page === 1 && (
-            <section className="mb-24">
-              <div className="flex items-center justify-between mb-12">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm">
-                    <Sparkles size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-black text-slate-900 tracking-tight">High-Value Perspectives</h2>
-                    <p className="text-sm text-slate-500 serif-text">Curated insights driving the conversation.</p>
-                  </div>
-                </div>
-                <Link to="/category/Technology" className="hidden md:flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm">
-                  View All <ArrowRight size={16} />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {priorityPosts.map(post => (
-                  <PostCard key={post.id} post={post} variant="small" />
-                ))}
-              </div>
-            </section>
-          )
-        )}
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12">
+        {/* Search Bar */}
+        <div className="relative mb-8">
+           <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
+           <input 
+             type="text" 
+             placeholder="Search articles..."
+             value={query || ''}
+             onChange={(e) => {
+               if (e.target.value) {
+                 searchParams.set('search', e.target.value);
+               } else {
+                 searchParams.delete('search');
+               }
+               setSearchParams(searchParams);
+             }}
+             className="w-full bg-[#F3F4F6] text-[#111827] px-14 py-4 rounded-full text-[15px] font-medium placeholder-slate-400 outline-none focus:ring-2 focus:ring-[#047857]/20 transition-all border-none"
+           />
+        </div>
 
-        <div className="flex flex-col lg:flex-row gap-20">
-          <main className="lg:w-2/3">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-                  <Globe size={20} />
-                </div>
-                <h2 className="text-xl font-black text-slate-900 tracking-tight">Global Feed</h2>
-              </div>
-              
-              {/* Category Filters */}
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => {
-                    searchParams.delete('category');
-                    searchParams.set('page', '1');
-                    setSearchParams(searchParams);
-                  }}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                    !activeCategory
-                      ? 'bg-slate-900 text-white shadow-lg shadow-slate-200'
-                      : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-                  }`}
-                >
-                  All
-                </button>
-                {categories.slice(0, 4).map(category => (
-                  <button
-                    key={category}
-                    onClick={() => handleCategoryClick(category)}
-                    className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                      activeCategory === category
-                        ? 'bg-slate-900 text-white shadow-lg shadow-slate-200'
-                        : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-8 md:gap-y-12">
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-3 mb-10">
+          <button
+            onClick={() => {
+              searchParams.delete('category');
+              searchParams.set('page', '1');
+              setSearchParams(searchParams);
+            }}
+            className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all ${
+              !activeCategory
+                ? 'bg-[#047857] text-white'
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            All
+          </button>
+          
+          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-slate-50 text-slate-600 hover:bg-slate-100`}>
+            Trending
+          </button>
+          
+          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-slate-50 text-slate-600 hover:bg-slate-100`}>
+            High Earnings
+          </button>
+          
+          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-slate-50 text-slate-600 hover:bg-slate-100`}>
+            Newest
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-10">
+          <main className="w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {paginatedPosts.map((post, index) => (
-                <div key={post.id} className={index === 0 && !activeCategory ? "col-span-2 md:col-span-3" : ""}>
-                   <PostCard post={post} variant={index === 0 && !activeCategory ? "large" : "small"} />
+                <div key={post.id} className={index === 0 && !activeCategory && !query ? "md:col-span-2 lg:col-span-2" : ""}>
+                   <PostCard post={post} variant={index === 0 && !activeCategory && !query ? "featured" : "standard"} />
                 </div>
               ))}
             </div>
 
             {filteredPosts.length === 0 && (
-              <div className="py-32 text-center bg-white rounded-[3rem] shadow-sm border border-slate-100 mt-8">
-                <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
-                  <Search className="w-10 h-10 text-slate-300" />
-                </div>
-                <h3 className="text-2xl font-black text-slate-900 mb-2">No Content Found</h3>
-                <p className="text-slate-500 serif-text text-lg">Try adjusting your search or category filters.</p>
+              <div className="py-24 text-center bg-slate-50 rounded-[2rem] mt-8">
+                <Search className="w-10 h-10 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-[#111827] mb-2">No Content Found</h3>
+                <p className="text-slate-500 text-sm">Try adjusting your search or category filters.</p>
               </div>
             )}
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-20 flex items-center justify-center gap-3">
+              <div className="mt-16 flex items-center justify-center gap-3">
                 <button 
                   onClick={() => handlePageChange(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:border-emerald-500 hover:text-emerald-500 hover:shadow-lg disabled:opacity-30 transition-all"
+                  className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#047857] hover:text-white disabled:opacity-30 transition-all font-bold"
                 >
-                  <ChevronLeft size={24} />
+                  <ChevronLeft size={20} />
                 </button>
                 
-                <div className="flex items-center gap-2 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-2">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                     <button
                       key={p}
                       onClick={() => handlePageChange(p)}
-                      className={`w-10 h-10 rounded-xl font-bold text-sm transition-all ${
+                      className={`w-10 h-10 rounded-full font-bold text-sm transition-all ${
                         page === p 
-                          ? 'bg-slate-900 text-white shadow-md' 
-                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                          ? 'bg-[#047857] text-white' 
+                          : 'text-slate-500 hover:bg-slate-100'
                       }`}
                     >
                       {p}
@@ -198,63 +174,13 @@ const Home: React.FC = () => {
                 <button 
                   onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:border-emerald-500 hover:text-emerald-500 hover:shadow-lg disabled:opacity-30 transition-all"
+                  className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#047857] hover:text-white disabled:opacity-30 transition-all font-bold"
                 >
-                  <ChevronRight size={24} />
+                  <ChevronRight size={20} />
                 </button>
               </div>
             )}
           </main>
-
-          <aside className="lg:w-1/3">
-            <div className="sticky top-24 space-y-12">
-              <section className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
-                    <Trophy size={20} />
-                  </div>
-                  <h3 className="text-lg font-black text-slate-900 tracking-tight">Expert Contributions</h3>
-                </div>
-                <div className="space-y-6">
-                  {approvedPosts.slice(0, 5).map((post, idx) => (
-                    <Link key={post.id} to={`/post/${post.slug}`} className="group flex gap-5 items-start p-4 -mx-4 rounded-2xl hover:bg-slate-50 transition-colors">
-                      <span className="text-3xl font-black text-slate-200 group-hover:text-emerald-500 transition-colors mono-text mt-1">0{idx + 1}</span>
-                      <div>
-                        <h4 className="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors line-clamp-2 leading-tight mb-2">
-                          {post.title}
-                        </h4>
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-slate-200 overflow-hidden">
-                            <img src={post.author.avatar} alt={post.author.name} className="w-full h-full object-cover" />
-                          </div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            {post.author.name}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-
-
-              <section className="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div className="relative z-10">
-                  <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(16,185,129,0.4)] group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                    <Zap className="w-7 h-7 text-slate-900" fill="currentColor" />
-                  </div>
-                  <h3 className="text-3xl font-black mb-4 tracking-tight leading-tight">Elite Tier Access</h3>
-                  <p className="text-slate-400 mb-8 serif-text leading-relaxed text-lg">Unlock high-RPM assignments and deep-dive reports targeting premium global markets.</p>
-                  <Link to="/plans" className="flex items-center justify-center gap-2 w-full bg-white text-slate-900 py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-emerald-50 transition-all hover:shadow-lg">
-                    Upgrade Now <ArrowUpRight size={18} />
-                  </Link>
-                </div>
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/20 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-emerald-500/30 transition-all duration-700"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/20 rounded-full -ml-24 -mb-24 blur-3xl group-hover:bg-indigo-500/30 transition-all duration-700"></div>
-              </section>
-            </div>
-          </aside>
         </div>
       </div>
     </div>

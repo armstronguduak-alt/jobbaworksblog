@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Users, FileText, Banknote, Globe, ArrowUpRight, ShieldCheck, Activity, BarChart3 } from 'lucide-react';
+import { Users, FileText, Banknote, Globe, ArrowUpRight, ShieldCheck, Activity, BarChart3, Eye } from 'lucide-react';
 
 const AdminOverview: React.FC = () => {
   const { posts, allUsers } = useAuth();
@@ -8,10 +8,12 @@ const AdminOverview: React.FC = () => {
   const activeUsers = allUsers.filter((u) => u.status === 'active').length;
   const paidUsers = allUsers.filter((u) => u.planId !== 'free').length;
 
+  const totalViews = posts.reduce((sum, p) => sum + (p.views || 0), 0);
+  
   const stats = [
     { label: 'Total Users', value: allUsers.length, icon: Users, trend: '+Realtime', color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'Pending Content', value: posts.filter((p) => p.status === 'pending').length, icon: FileText, trend: 'Moderation queue', color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: 'Active Users', value: activeUsers, icon: Activity, trend: `${paidUsers} paid plans`, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Ecosystem Views', value: totalViews, icon: Eye, trend: 'All-time readers', color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Approved Posts', value: posts.filter((p) => p.status === 'approved').length, icon: Globe, trend: 'Live content', color: 'text-indigo-600', bg: 'bg-indigo-50' },
   ];
 

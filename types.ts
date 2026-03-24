@@ -133,6 +133,7 @@ export interface Post {
   aiModeration?: AiModerationResult | null;
   authorEarningsClaimed?: boolean;
   isStory?: boolean;
+  views?: number;
 }
 
 export interface SubscriptionPlan {

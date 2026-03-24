@@ -56,144 +56,110 @@ const Pricing: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen py-20 px-4">
+    <div className="bg-[#F9FAFB] min-h-screen py-20 px-4 font-sans text-[#111827]">
       <div className="max-w-7xl mx-auto text-center mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-black uppercase tracking-widest mb-4">
-          Sustainable Rewards Program
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#DCFCE7] border border-green-200 text-[#16A34A] rounded-full text-xs font-bold uppercase tracking-widest mb-6">
+          Sustainable Rewards Matrix
         </div>
-        <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-6">Choose Your Plan</h1>
-        <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
-          Buy once, keep your current tier, and upgrade anytime. <span className="text-emerald-600">Jobba</span><span className="text-black">Works</span> plans are one-time upgrades, not monthly subscriptions.
+        <h1 className="text-4xl md:text-5xl font-black text-[#111827] mb-4 tracking-tight">Access Your Tier</h1>
+        <p className="text-base md:text-lg text-[#6B7280] max-w-2xl mx-auto font-medium">
+          Unlock your earning potential with a single lifetime upgrade. No monthly fees, just pure verified yield.
         </p>
       </div>
 
       {(paymentStatusMessage || isVerifyingPayment) && (
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-700 shadow-sm">
-            {isVerifyingPayment ? 'Verifying payment status...' : paymentStatusMessage}
+        <div className="max-w-3xl mx-auto mb-10">
+          <div className="rounded-2xl border border-green-200 bg-[#DCFCE7] px-6 py-5 text-sm font-bold text-[#16A34A] text-center shadow-sm">
+            {isVerifyingPayment ? 'Authenticating payment block...' : paymentStatusMessage}
           </div>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-8 mb-20 px-1 md:px-0">
+      {/* Grid Layout optimized for Native App Look */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-24 px-2 md:px-0">
         {(Object.values(systemPlans) as SubscriptionPlan[])
-          .filter((plan) => plan.isActive !== false)
+          .filter((plan) => plan.isActive !== false && plan.id !== 'elite')
           .map((plan) => {
-            const planHierarchy = ['free', 'starter', 'pro', 'elite', 'vip', 'executive', 'platinum'];
+            const planHierarchy = ['free', 'starter', 'pro', 'vip', 'executive', 'platinum'];
             const userPlanIndex = user ? planHierarchy.indexOf(user.planId) : -1;
             const thisPlanIndex = planHierarchy.indexOf(plan.id);
             const isCurrent = user?.planId === plan.id;
             const isLowerTier = Boolean(user && thisPlanIndex < userPlanIndex);
             const isLowerOrEqual = Boolean(isCurrent || isLowerTier);
 
-            const isStarter = plan.id === 'starter';
             const isPro = plan.id === 'pro';
-            const isElite = plan.id === 'elite';
-            const isVip = plan.id === 'vip';
-            const isExecutive = plan.id === 'executive';
-            const isPlatinum = plan.id === 'platinum';
 
             return (
               <div
                 key={plan.id}
-                className={`relative bg-white rounded-2xl md:rounded-[2.5rem] p-3 md:p-8 shadow-xl transition-all hover:translate-y-[-4px] flex flex-col ${
-                  isPro
-                    ? 'ring-4 ring-emerald-500 shadow-emerald-100'
-                    : isPlatinum
-                    ? 'ring-4 ring-indigo-500 shadow-indigo-100'
-                    : isExecutive
-                    ? 'ring-4 ring-rose-500 shadow-rose-100'
-                    : 'border border-slate-100'
+                className={`relative bg-white rounded-3xl p-6 md:p-8 flex flex-col transition-all duration-300 transform shadow-sm ${
+                  isLowerOrEqual 
+                   ? 'border border-slate-200 opacity-60' 
+                   : 'border border-slate-200 hover:border-[#16A34A] hover:shadow-lg hover:-translate-y-1'
                 }`}
               >
-                {isPro && (
-                  <div className="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-2 md:px-4 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-1 whitespace-nowrap">
-                    <Sparkles size={12} className="hidden sm:block" /> Popular
+                {/* Popular Tags */}
+                {isPro && !isLowerOrEqual && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#16A34A] text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                    <Sparkles size={12} /> Popular 
                   </div>
                 )}
-                {isExecutive && (
-                  <div className="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-2 md:px-4 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-1 whitespace-nowrap">
-                    <Star size={12} className="hidden sm:block" /> Ultimate
+                
+                <div className="flex items-center gap-4 mb-6">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${isLowerOrEqual ? 'border-slate-200 bg-slate-50 text-slate-400' : 'border-green-200 bg-[#DCFCE7] text-[#16A34A]'}`}>
+                    {plan.id === 'free' && <Shield size={20} />}
+                    {plan.id === 'starter' && <Rocket size={20} />}
+                    {plan.id === 'pro' && <Zap size={20} />}
+                    {plan.id === 'vip' && <Crown size={20} />}
+                    {plan.id === 'executive' && <ShieldCheck size={20} />}
+                    {plan.id === 'platinum' && <Sparkles size={20} />}
                   </div>
-                )}
-                {isPlatinum && (
-                  <div className="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-2 md:px-4 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-1 whitespace-nowrap">
-                    <Crown size={12} className="hidden sm:block" /> Prestige
-                  </div>
-                )}
-
-                <div className="mb-4 md:mb-8 text-center sm:text-left">
-                  <div
-                    className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl mx-auto sm:mx-0 flex items-center justify-center mb-3 md:mb-6 ${
-                      isStarter
-                        ? 'bg-blue-100 text-blue-600'
-                        : isPro
-                        ? 'bg-emerald-100 text-emerald-600'
-                        : isElite
-                        ? 'bg-purple-100 text-purple-600'
-                        : isVip
-                        ? 'bg-amber-100 text-amber-600'
-                        : isExecutive
-                        ? 'bg-rose-100 text-rose-600'
-                        : isPlatinum
-                        ? 'bg-indigo-100 text-indigo-600'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    {plan.id === 'free' && <Shield className="w-5 h-5 md:w-6 md:h-6" />}
-                    {plan.id === 'starter' && <Rocket className="w-5 h-5 md:w-6 md:h-6" />}
-                    {plan.id === 'pro' && <Zap className="w-5 h-5 md:w-6 md:h-6" />}
-                    {plan.id === 'elite' && <Star className="w-5 h-5 md:w-6 md:h-6" />}
-                    {plan.id === 'vip' && <Crown className="w-5 h-5 md:w-6 md:h-6" />}
-                    {plan.id === 'executive' && <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />}
-                    {plan.id === 'platinum' && <Sparkles className="w-5 h-5 md:w-6 md:h-6" />}
-                  </div>
-                  <h3 className="text-sm sm:text-base md:text-2xl font-black text-slate-900 mb-1 md:mb-2 leading-tight">{plan.name}</h3>
-                  <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-1">
-                    <span className="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 leading-none">₦{plan.price}</span>
-                    <span className="text-[10px] sm:text-xs md:text-sm text-slate-500 font-bold">one-time</span>
+                  <div>
+                    <h3 className="text-xl font-bold text-[#111827] leading-tight">{plan.name}</h3>
+                    <p className={`text-[10px] font-bold uppercase tracking-widest ${isLowerOrEqual ? 'text-slate-400' : 'text-[#16A34A]'}`}>Lifetime Entry</p>
                   </div>
                 </div>
 
-                <div className="space-y-3 md:space-y-4 mb-6 md:mb-10 flex-1">
-                  <div className="bg-slate-50 p-2 md:p-4 rounded-xl md:rounded-2xl">
-                    <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 md:mb-3">Metrics</p>
-                    <div className="flex justify-between items-center mb-1.5 md:mb-2">
-                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-slate-600">Return Cap</span>
-                      <span className="text-[10px] sm:text-xs md:text-sm font-black text-emerald-600">₦{(plan.monthlyReturnCap || 0).toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between items-center mb-1.5 md:mb-2">
-                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-slate-600">Break-even</span>
-                      <span className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-900">{plan.breakEvenDay || 0}d</span>
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-[#111827] tracking-tight">₦{plan.price.toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-4 mb-8 flex-1">
+                  {/* Ledger Metrics */}
+                  <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] mb-3">System Thresholds</p>
+                    <div className="flex justify-between items-center mb-2">
+                       <span className="text-xs font-semibold text-[#6B7280]">Yield Cap</span>
+                       <span className="text-xs font-bold text-[#111827]">₦{(plan.monthlyReturnCap || 0).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-slate-600">Referrals</span>
-                      <span className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-900">{plan.minReferrals || 0}</span>
+                       <span className="text-xs font-semibold text-[#6B7280]">BEP Target</span>
+                       <span className="text-xs font-bold text-[#111827]">{plan.breakEvenDay || 0} days</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
-                    <div className="bg-emerald-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-emerald-100 text-center sm:text-left">
-                      <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-1 md:mb-2">Reads</p>
-                      <div className="flex flex-col">
-                        <span className="text-sm sm:text-base md:text-lg font-black text-emerald-700 leading-tight">₦{plan.readReward.toFixed(2)}</span>
-                        <span className="text-[8px] md:text-[10px] font-bold text-emerald-600/70 uppercase">Daily Limit: {plan.readLimit}</span>
-                      </div>
-                    </div>
-                    <div className="bg-purple-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-purple-100 text-center sm:text-left">
-                      <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-purple-600 mb-1 md:mb-2">Comments</p>
-                      <div className="flex flex-col">
-                        <span className="text-sm sm:text-base md:text-lg font-black text-purple-700 leading-tight">₦{plan.commentReward.toFixed(2)}</span>
-                        <span className="text-[8px] md:text-[10px] font-bold text-purple-600/70 uppercase">Daily Limit: {plan.commentLimit}</span>
-                      </div>
-                    </div>
+                  {/* Operational Yield */}
+                  <div className="grid grid-cols-2 gap-3">
+                     <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col justify-center">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] mb-1">Articles</span>
+                        <span className="text-lg font-bold text-[#111827]">₦{plan.readReward}</span>
+                        <span className="text-[9px] font-semibold text-[#9CA3AF]">CAP: {plan.readLimit}/d</span>
+                     </div>
+                     <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col justify-center">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] mb-1">Engagement</span>
+                        <span className="text-lg font-bold text-[#111827]">₦{plan.commentReward}</span>
+                        <span className="text-[9px] font-semibold text-[#9CA3AF]">CAP: {plan.commentLimit}/d</span>
+                     </div>
                   </div>
 
-                  <ul className="space-y-2 md:space-y-3 pt-2 md:pt-4">
+                  {/* Feature Checklist */}
+                  <ul className="space-y-3 pt-4 border-t border-slate-100">
                     {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-[10px] sm:text-xs md:text-sm text-slate-600 font-medium">
-                        <div className="shrink-0 w-3 h-3 md:w-5 md:h-5 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mt-0.5 md:mt-0">
-                          <Check className="w-2 h-2 md:w-3 md:h-3" strokeWidth={3} />
+                      <li key={i} className="flex items-start gap-3 text-xs text-[#6B7280] font-medium">
+                        <div className={`mt-0.5 shrink-0 rounded-full p-0.5 ${isLowerOrEqual ? 'bg-slate-100 text-slate-400' : 'bg-[#DCFCE7] text-[#16A34A]'}`}>
+                          <Check size={10} strokeWidth={4} />
                         </div>
                         <span className="leading-tight">{feature}</span>
                       </li>
@@ -204,53 +170,42 @@ const Pricing: React.FC = () => {
                 <button
                   disabled={isLowerOrEqual}
                   onClick={() => handlePlanClick(plan)}
-                  className={`w-full py-2.5 md:py-4 rounded-xl md:rounded-2xl text-[10px] sm:text-xs md:text-base font-black transition-all flex items-center justify-center gap-1.5 md:gap-2 ${
+                  className={`w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${
                     isLowerOrEqual
-                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
-                      : isPlatinum
-                      ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-100 active:scale-95'
-                      : isExecutive
-                      ? 'bg-rose-600 text-white hover:bg-rose-700 shadow-lg shadow-rose-100 active:scale-95'
-                      : isPro
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-200 active:scale-95'
-                      : 'bg-slate-900 text-white hover:bg-black active:scale-95'
+                      ? 'bg-slate-100 text-[#9CA3AF] cursor-not-allowed'
+                      : 'bg-[#16A34A] text-white hover:bg-green-700'
                   }`}
                 >
-                  {isCurrent ? 'Current Plan' : isLowerTier ? 'Unavailable' : plan.id === 'free' ? 'Basic Access' : 'Upgrade Now'}
+                  {isCurrent ? 'Active Tier' : isLowerTier ? 'Unlocked' : plan.id === 'free' ? 'Default Access' : 'Authorize Upgrade'}
                 </button>
               </div>
             );
           })}
       </div>
 
-      <div className="max-w-4xl mx-auto space-y-12">
-        <div className="bg-white rounded-[2.5rem] p-10 shadow-lg border border-slate-100 flex flex-col md:flex-row items-center gap-12">
-          <div className="flex-1">
-            <h4 className="text-2xl font-black text-slate-900 mb-4">Ad-Supported Ecosystem</h4>
-            <p className="text-slate-500 leading-relaxed mb-6">
-              To maintain the highest quality of rewards, <span className="text-emerald-600">Jobba</span>
-              <span className="text-black">Works</span> integrates targeted sponsored content across all tiers. This ensures the platform remains sustainable while delivering value to every user.
+      <div className="max-w-4xl mx-auto mt-12 mb-20">
+        <div className="bg-white rounded-3xl p-8 md:p-10 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-10">
+          <div className="flex-1 text-center md:text-left">
+            <h4 className="text-xl font-bold text-[#111827] mb-3">Institutional Security</h4>
+            <p className="text-[#6B7280] text-sm leading-relaxed mb-6 font-medium">
+              All transactions are encrypted and processed verified via our core partners. No hidden deductions, seamless direct bank settlements.
             </p>
-            <div className="flex gap-4">
-              <div className="px-4 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 flex items-center gap-2">
-                <Shield size={14} /> Secure Encryption
+            <div className="flex flex-wrap justify-center md:justify-start gap-3">
+              <div className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-[#6B7280] flex items-center gap-2">
+                <Shield size={14} className="text-[#16A34A]" /> AES-256
               </div>
-              <div className="px-4 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 flex items-center gap-2">
-                <Check size={14} /> PCI Compliant
+              <div className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-[#6B7280] flex items-center gap-2">
+                <Check size={14} className="text-[#16A34A]" /> PCI-DSS
               </div>
             </div>
           </div>
-          <div className="w-full md:w-64 grid grid-cols-2 gap-4">
-            {['Korapay', 'Visa', 'Bank', 'Card'].map((p) => (
-              <div key={p} className="h-12 bg-slate-50 rounded-xl flex items-center justify-center text-[10px] font-black uppercase text-slate-300">
-                {p}
-              </div>
-            ))}
+          <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
+             {['Korapay', 'Visa', 'Mastercard', 'Bank Transfer'].map(p => (
+                <div key={p} className="h-12 w-full md:w-32 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">
+                  {p}
+                </div>
+             ))}
           </div>
-        </div>
-
-        <div className="text-center text-slate-400 text-xs">
-          <p>Plans are one-time purchases. You can upgrade to a higher plan at any time. Rewards are accrued in real-time and subject to verification.</p>
         </div>
       </div>
 

@@ -36,70 +36,32 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-sans">
-      {/* Left Panel - Dark Fintech Branding (Hidden on Mobile) */}
-      <div className="hidden lg:flex w-1/2 bg-slate-900 border-r border-slate-800 flex-col justify-between p-12 relative overflow-hidden">
-        {/* Background Decorative Gradients/Blobs */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/10 blur-[100px]" />
-          <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/10 blur-[120px]" />
-        </div>
-
-        <div className="relative z-10">
-          <Link to="/" className="inline-flex items-center gap-3">
-            <img src="/logo.png" alt="JobbaWorks Logo" className="w-10 h-10 rounded-xl object-cover ring-2 ring-emerald-500/20" />
-            <span className="text-2xl font-black tracking-tight text-white">
-              <span className="text-emerald-500">Jobba</span>Works
+    <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-4 font-sans">
+      <div className="w-full max-w-md">
+        
+        <div className="flex justify-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2">
+            <img src="/logo.png" alt="JobbaWorks Logo" className="w-10 h-10 rounded-xl object-cover" />
+            <span className="text-2xl font-bold tracking-tight text-[#111827]">
+              JobbaWorks
             </span>
           </Link>
         </div>
 
-        <div className="relative z-10 max-w-md">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
-             <Lock size={12} /> Secure Access
-          </div>
-          <h1 className="text-5xl font-black text-white leading-[1.1] mb-6 tracking-tight">
-            Your earnings, <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-indigo-400">securely</span> managed.
-          </h1>
-          <p className="text-lg text-slate-400 font-medium leading-relaxed">
-            Log in to your authenticated dashboard. Monitor real-time rewards, authorize fast payouts, and manage your financial writing portfolio with bank-level encryption.
-          </p>
-        </div>
-
-        <div className="relative z-10 flex items-center gap-4 text-xs font-bold text-slate-500">
-          <span className="flex items-center gap-1"><Lock size={14} /> PCI-DSS Compliant</span>
-          <span className="w-1 h-1 rounded-full bg-slate-700"></span>
-          <span>Protected Infrastructure</span>
-        </div>
-      </div>
-
-      {/* Right Panel - Form Layout */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative bg-white">
-        <div className="w-full max-w-[420px]">
-          {/* Mobile Logo Only */}
-          <div className="lg:hidden flex items-center justify-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <img src="/logo.png" alt="JobbaWorks" className="w-8 h-8 rounded-lg object-cover" />
-              <span className="text-xl font-black tracking-tight">
-                <span className="text-emerald-600">Jobba</span><span className="text-slate-900">Works</span>
-              </span>
-            </Link>
-          </div>
-
-          <div className="mb-10 text-center lg:text-left">
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
-            <p className="text-slate-500 font-medium mt-2">Enter your credentials to access your secure vault.</p>
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 sm:p-10">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Welcome back</h2>
+            <p className="text-sm text-[#6B7280] mt-2">Enter your details to access your account.</p>
           </div>
 
           {message && (
-            <div className="mb-6 p-4 bg-emerald-50/50 text-emerald-700 border border-emerald-100/50 rounded-2xl text-sm font-bold flex items-start gap-3">
+            <div className="mb-6 p-4 bg-[#DCFCE7] text-[#16A34A] rounded-xl text-sm font-medium flex items-start gap-3">
               <div className="shrink-0 mt-0.5"><Lock size={16} /></div>
               {message}
             </div>
           )}
           {error && (
-            <div className="mb-6 p-4 bg-rose-50/50 text-rose-700 border border-rose-100/50 rounded-2xl text-sm font-bold flex items-start gap-3">
+            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium flex items-start gap-3">
               <div className="shrink-0 mt-0.5"><Lock size={16} /></div>
               {error}
             </div>
@@ -107,9 +69,9 @@ const Login: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-[#111827] mb-2">Email address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={18} />
                 <input
                   type="email"
                   required
@@ -118,18 +80,18 @@ const Login: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-400">Password</label>
-                <Link to="/forgot-password" className="text-[11px] font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700">Forgot?</Link>
+                <label className="block text-sm font-medium text-[#111827]">Password</label>
+                <Link to="/forgot-password" className="text-sm font-semibold text-[#16A34A] hover:text-[#047857] transition-colors">Forgot password?</Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={18} />
                 <input
                   type={showPassword ? "text" : "password"}
                   required
@@ -137,12 +99,12 @@ const Login: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-12 py-3.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 font-medium text-sm tracking-widest"
+                  className="w-full pl-11 pr-12 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] transition-all text-[#111827] text-sm tracking-widest"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -152,16 +114,16 @@ const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading || !email.trim() || !password}
-              className="w-full py-4 mt-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black uppercase tracking-widest text-[11px] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)]"
+              className="w-full py-3 mt-4 bg-[#16A34A] hover:bg-green-700 text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Authenticating...' : 'Secure Authorization'}
-              {!loading && <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />}
+              {loading ? 'Authenticating...' : 'Sign In'}
+              {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 
-          <div className="mt-8 text-center border-t border-slate-100 pt-8">
-            <p className="text-[13px] font-medium text-slate-500">
-              New to JobbaWorks? <Link to="/register" className="text-slate-900 font-black hover:text-emerald-600 transition-colors">Create your account</Link>
+          <div className="mt-8 text-center border-t border-slate-100 pt-6">
+            <p className="text-sm font-medium text-[#6B7280]">
+              Don't have an account? <Link to="/register" className="text-[#16A34A] font-semibold hover:text-green-700 transition-colors">Sign up now</Link>
             </p>
           </div>
         </div>

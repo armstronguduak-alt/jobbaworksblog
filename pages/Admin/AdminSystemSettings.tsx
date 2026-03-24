@@ -1,6 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../src/integrations/supabase/client';
 import { 
   Save, 
   RefreshCw, 
@@ -17,6 +18,23 @@ const AdminSystemSettings: React.FC = () => {
   const { systemPlans, updateSystemPlan, pageToggles, updatePageToggles } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<PlanId>('free');
   const [localToggles, setLocalToggles] = useState(pageToggles);
+  const [viewRewardRate, setViewRewardRate] = useState<number>(100);
+
+  useEffect(() => {
+    supabase.from('system_settings').select('value').eq('key', 'view_reward_rate_per_1k').maybeSingle()
+      .then(({ data }) => {
+        if (data?.value) setViewRewardRate(Number(data.value));
+      });
+  }, []);
+
+  const saveViewRewardRate = async () => {
+    await supabase.from('system_settings').upsert({ 
+      key: 'view_reward_rate_per_1k', 
+      value: viewRewardRate.toString(),
+      is_public: true 
+    });
+    alert('View reward rate updated successfully!');
+  };
 
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -208,6 +226,37 @@ const AdminSystemSettings: React.FC = () => {
               >
                 Save Toggles
               </button>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-10">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                <Coins size={20} />
+              </div>
+              <h3 className="text-xl font-black text-slate-900">Monetization Settings</h3>
+            </div>
+            
+            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+               <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-3 ml-1">Author Reward Per 1,000 Views (₦)</label>
+               <div className="flex items-center gap-4">
+                 <div className="relative flex-1">
+                   <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                   <input 
+                     type="number"
+                     value={viewRewardRate}
+                     onChange={(e) => setViewRewardRate(Number(e.target.value))}
+                     className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none font-bold"
+                   />
+                 </div>
+                 <button 
+                  onClick={saveViewRewardRate}
+                  className="px-8 py-4 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200 shrink-0"
+                 >
+                   Save Rate
+                 </button>
+               </div>
+               <p className="text-xs text-slate-400 mt-3 ml-1 font-medium">This is the base rate paid to authors automatically as their articles generate distinct views across the ecosystem.</p>
             </div>
           </div>
 
