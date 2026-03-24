@@ -208,26 +208,6 @@ const DashboardHome: React.FC = () => {
         </div>
       </div>
 
-      {/* Secondary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: 'Referral Net', value: `${stats.referrals} / ${plan.minReferrals}`, icon: Users, sub: 'Nodes Active' },
-          { label: 'Engagement', value: stats.commentsMadeToday, icon: MessageSquare, sub: `Target: ${plan.commentLimit}` },
-          { label: 'Read Output', value: stats.postsReadToday, icon: BookOpen, sub: `Target: ${plan.readLimit}` },
-          { label: 'Pending Yield', value: `₦${stats.pendingRewards.toFixed(0)}`, icon: Clock, sub: 'In clearance' },
-        ].map((item, idx) => (
-          <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-            <div className="w-10 h-10 bg-[#DCFCE7] text-[#16A34A] rounded-xl flex items-center justify-center mb-4">
-              <item.icon size={20} />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider mb-1">{item.label}</p>
-              <h5 className="text-2xl font-bold text-[#111827] tracking-tight mb-1">{item.value}</h5>
-              <p className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest">{item.sub}</p>
-            </div>
-          </div>
-        ))}
-      </div>
 
       {/* Referral & Action Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -273,97 +253,6 @@ const DashboardHome: React.FC = () => {
         </div>
       </div>
 
-      {/* Financial Ledger & Earnings Breakdown */}
-      <div className="bg-white rounded-2xl border border-slate-100 p-6 md:p-8 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <h3 className="text-lg font-bold text-[#111827] flex items-center gap-3">
-            <div className="w-8 h-8 bg-[#DCFCE7] rounded-lg flex items-center justify-center">
-              <TrendingUp size={16} className="text-[#16A34A]" />
-            </div>
-            Ledger & Yield Breakdown
-          </h3>
-          <Link to="/dashboard/wallet" className="text-sm font-semibold text-[#16A34A] hover:text-green-700 transition-colors">View All Activity →</Link>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Activity List */}
-          <div className="lg:col-span-2">
-            <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280] mb-3 ml-1">Recent Transactions</h4>
-            <div className="space-y-2">
-              {(stats.transactions || []).slice(0, 5).map((tx) => (
-                <div key={tx.id} className="bg-white border border-slate-100 rounded-xl p-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 border border-slate-100 ${
-                      tx.type === 'reading_reward' ? 'text-[#16A34A]' :
-                      tx.type === 'referral_bonus' ? 'text-indigo-600' :
-                      tx.type === 'withdrawal' ? 'text-amber-500' :
-                      tx.type === 'subscription_fee' ? 'text-red-500' :
-                      'text-[#6B7280]'
-                    }`}>
-                      {tx.type === 'reading_reward' || tx.type.includes('reward') ? <BookOpen size={14} /> : 
-                       tx.type === 'withdrawal' ? <Wallet size={14} /> : 
-                       <Sparkles size={14} />}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm text-[#111827] tracking-tight">{tx.description}</p>
-                      <p className="text-[10px] font-medium text-[#9CA3AF] uppercase tracking-wider">{new Date(tx.date).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className={`font-bold text-sm tracking-tight ${tx.amount > 0 ? 'text-[#16A34A]' : 'text-[#111827]'}`}>
-                      {tx.amount > 0 ? '+' : ''}₦{Math.abs(tx.amount).toLocaleString()}
-                    </p>
-                    <span className={`text-[9px] uppercase font-bold tracking-widest ${
-                      tx.status === 'completed' ? 'text-[#16A34A]' : 
-                      tx.status === 'pending' ? 'text-amber-500' : 'text-red-500'
-                    }`}>
-                      {tx.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-              {(stats.transactions || []).length === 0 && (
-                <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                  <p className="text-sm font-medium text-[#6B7280]">No recent transactions found.</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Earnings Breakdown */}
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6">
-            <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280] mb-5">Aggregate Yield</h4>
-            <div className="space-y-5">
-              <div>
-                <div className="flex items-end justify-between mb-2">
-                  <span className="text-xs font-semibold text-[#6B7280]">Reading & Engagement</span>
-                  <span className="text-sm font-bold text-[#111827]">₦{stats.postEarnings.toLocaleString()}</span>
-                </div>
-                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-[#16A34A] h-full rounded-full" style={{ width: `${Math.min((stats.postEarnings / (stats.totalEarnings || 1)) * 100, 100)}%` }}></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex items-end justify-between mb-2">
-                  <span className="text-xs font-semibold text-[#6B7280]">Network Commissions</span>
-                  <span className="text-sm font-bold text-[#111827]">₦{stats.referralEarnings.toLocaleString()}</span>
-                </div>
-                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${Math.min((stats.referralEarnings / (stats.totalEarnings || 1)) * 100, 100)}%` }}></div>
-                </div>
-              </div>
-
-              <div className="pt-5 border-t border-slate-200">
-                <div className="flex items-end justify-between mb-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">Total Yield</span>
-                  <span className="text-lg font-bold text-[#16A34A]">₦{stats.totalEarnings.toLocaleString()}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="bg-white rounded-2xl border border-slate-100 p-6 md:p-8 shadow-sm">
         <h3 className="text-lg font-bold text-[#111827] mb-6 flex items-center gap-3">

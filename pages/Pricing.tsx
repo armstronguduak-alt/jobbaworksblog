@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Check, Zap, Shield, Crown, Sparkles, Star, Rocket, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Shield, Check } from 'lucide-react';
 import { SubscriptionPlan } from '../types';
 import { useNavigate } from 'react-router-dom';
 import PaymentModal from '../components/PaymentModal';
@@ -56,160 +56,111 @@ const Pricing: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#F9FAFB] min-h-screen py-20 px-4 font-sans text-[#111827]">
-      <div className="max-w-7xl mx-auto text-center mb-16">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#DCFCE7] border border-green-200 text-[#16A34A] rounded-full text-xs font-bold uppercase tracking-widest mb-6">
-          Sustainable Rewards Matrix
-        </div>
-        <h1 className="text-4xl md:text-5xl font-black text-[#111827] mb-4 tracking-tight">Access Your Tier</h1>
-        <p className="text-base md:text-lg text-[#6B7280] max-w-2xl mx-auto font-medium">
-          Unlock your earning potential with a single lifetime upgrade. No monthly fees, just pure verified yield.
-        </p>
-      </div>
-
-      {(paymentStatusMessage || isVerifyingPayment) && (
-        <div className="max-w-3xl mx-auto mb-10">
-          <div className="rounded-2xl border border-green-200 bg-[#DCFCE7] px-6 py-5 text-sm font-bold text-[#16A34A] text-center shadow-sm">
-            {isVerifyingPayment ? 'Authenticating payment block...' : paymentStatusMessage}
+    <div className="bg-[#F9FAFB] min-h-screen py-16 px-4 md:px-0 font-sans text-[#111827]">
+      <div className="max-w-[400px] md:max-w-6xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 justify-center items-stretch flex-wrap">
+        
+        {(paymentStatusMessage || isVerifyingPayment) && (
+          <div className="w-full mb-6 max-w-4xl mx-auto">
+            <div className="rounded-2xl border border-green-200 bg-[#DCFCE7] px-6 py-5 text-sm font-bold text-[#16A34A] text-center shadow-sm">
+              {isVerifyingPayment ? 'Authenticating payment block...' : paymentStatusMessage}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Grid Layout optimized for Native App Look */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-24 px-2 md:px-0">
         {(Object.values(systemPlans) as SubscriptionPlan[])
-          .filter((plan) => plan.isActive !== false && plan.id !== 'elite')
+          .filter((plan) => plan.isActive !== false && plan.id !== 'elite' && plan.id !== 'executive')
           .map((plan) => {
             const planHierarchy = ['free', 'starter', 'pro', 'vip', 'executive', 'platinum'];
-            const userPlanIndex = user ? planHierarchy.indexOf(user.planId) : -1;
+            const userPlanIndex = user ? planHierarchy.indexOf(user.planId) : 0;
             const thisPlanIndex = planHierarchy.indexOf(plan.id);
             const isCurrent = user?.planId === plan.id;
             const isLowerTier = Boolean(user && thisPlanIndex < userPlanIndex);
-            const isLowerOrEqual = Boolean(isCurrent || isLowerTier);
+            
+            // Map plan details to look like user image mapping
+            const tagMap: Record<string, string> = {
+              'free': 'STARTER',
+              'starter': 'ESSENTIAL',
+              'pro': 'GROWTH',
+              'vip': 'ELITE',
+              'executive': 'EXECUTIVE',
+              'platinum': 'PLATINUM'
+            };
 
-            const isPro = plan.id === 'pro';
+            const isPopular = plan.id === 'pro';
 
             return (
-              <div
-                key={plan.id}
-                className={`relative bg-white rounded-3xl p-6 md:p-8 flex flex-col transition-all duration-300 transform shadow-sm ${
-                  isLowerOrEqual 
-                   ? 'border border-slate-200 opacity-60' 
-                   : 'border border-slate-200 hover:border-[#16A34A] hover:shadow-lg hover:-translate-y-1'
-                }`}
+              <div 
+                 key={plan.id}
+                 className={`w-full md:w-[300px] bg-white rounded-[24px] p-8 flex flex-col relative ${isPopular ? 'border-[3px] border-[#047857] shadow-xl md:scale-105 z-10' : 'border border-slate-200 shadow-sm'} ${isLowerTier ? 'opacity-60' : ''} h-full min-h-[480px]`}
               >
-                {/* Popular Tags */}
-                {isPro && !isLowerOrEqual && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#16A34A] text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
-                    <Sparkles size={12} /> Popular 
-                  </div>
-                )}
-                
-                <div className="flex items-center gap-4 mb-6">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${isLowerOrEqual ? 'border-slate-200 bg-slate-50 text-slate-400' : 'border-green-200 bg-[#DCFCE7] text-[#16A34A]'}`}>
-                    {plan.id === 'free' && <Shield size={20} />}
-                    {plan.id === 'starter' && <Rocket size={20} />}
-                    {plan.id === 'pro' && <Zap size={20} />}
-                    {plan.id === 'vip' && <Crown size={20} />}
-                    {plan.id === 'executive' && <ShieldCheck size={20} />}
-                    {plan.id === 'platinum' && <Sparkles size={20} />}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-[#111827] leading-tight">{plan.name}</h3>
-                    <p className={`text-[10px] font-bold uppercase tracking-widest ${isLowerOrEqual ? 'text-slate-400' : 'text-[#16A34A]'}`}>Lifetime Entry</p>
-                  </div>
-                </div>
-
-                <div className="mb-8">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black text-[#111827] tracking-tight">₦{plan.price.toLocaleString()}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-8 flex-1">
-                  {/* Ledger Metrics */}
-                  <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] mb-3">System Thresholds</p>
-                    <div className="flex justify-between items-center mb-2">
-                       <span className="text-xs font-semibold text-[#6B7280]">Yield Cap</span>
-                       <span className="text-xs font-bold text-[#111827]">₦{(plan.monthlyReturnCap || 0).toLocaleString()}</span>
+                 {isPopular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#047857] text-white px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm whitespace-nowrap">
+                       MOST POPULAR
                     </div>
-                    <div className="flex justify-between items-center">
-                       <span className="text-xs font-semibold text-[#6B7280]">BEP Target</span>
-                       <span className="text-xs font-bold text-[#111827]">{plan.breakEvenDay || 0} days</span>
+                 )}
+                 
+                 <div className="mb-6 flex-grow">
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#6B7280] mb-2">{tagMap[plan.id] || plan.id}</p>
+                    <h3 className="text-[26px] font-bold text-[#111827] mb-4">{plan.name}</h3>
+                    <div className="flex items-end gap-1 mb-10">
+                       <span className="text-4xl font-extrabold text-[#111827] tracking-tight">₦{plan.price.toLocaleString()}</span>
+                       <span className="text-[11px] text-[#6B7280] font-bold mb-1.5 leading-none">/lifetime</span>
                     </div>
-                  </div>
 
-                  {/* Operational Yield */}
-                  <div className="grid grid-cols-2 gap-3">
-                     <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col justify-center">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] mb-1">Articles</span>
-                        <span className="text-lg font-bold text-[#111827]">₦{plan.readReward}</span>
-                        <span className="text-[9px] font-semibold text-[#9CA3AF]">CAP: {plan.readLimit}/d</span>
-                     </div>
-                     <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col justify-center">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] mb-1">Engagement</span>
-                        <span className="text-lg font-bold text-[#111827]">₦{plan.commentReward}</span>
-                        <span className="text-[9px] font-semibold text-[#9CA3AF]">CAP: {plan.commentLimit}/d</span>
-                     </div>
-                  </div>
+                    <div className="space-y-5">
+                       <div className="flex gap-3 items-start">
+                          <CheckCircle2 size={16} className="text-[#047857] shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-[13px] font-bold text-[#111827]">₦{plan.readReward.toFixed(2)} per article</p>
+                            <p className="text-[11px] font-medium text-[#6B7280] leading-tight">Standard earning rate</p>
+                          </div>
+                       </div>
+                       <div className="flex gap-3 items-start">
+                          <CheckCircle2 size={16} className="text-[#047857] shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-[13px] font-bold text-[#111827]">{plan.readLimit === Infinity ? 'Unlimited' : plan.readLimit} articles daily</p>
+                            <p className="text-[11px] font-medium text-[#6B7280] leading-tight">Reading limit</p>
+                          </div>
+                       </div>
+                       {plan.monthlyReturnCap > 0 && (
+                       <div className="flex gap-3 items-start">
+                          <CheckCircle2 size={16} className="text-[#047857] shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-[13px] font-bold text-[#111827]">₦{plan.monthlyReturnCap.toLocaleString()} Limit</p>
+                            <p className="text-[11px] font-medium text-[#6B7280] leading-tight">Monthly earnings cap</p>
+                          </div>
+                       </div>
+                       )}
+                    </div>
+                 </div>
 
-                  {/* Feature Checklist */}
-                  <ul className="space-y-3 pt-4 border-t border-slate-100">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-3 text-xs text-[#6B7280] font-medium">
-                        <div className={`mt-0.5 shrink-0 rounded-full p-0.5 ${isLowerOrEqual ? 'bg-slate-100 text-slate-400' : 'bg-[#DCFCE7] text-[#16A34A]'}`}>
-                          <Check size={10} strokeWidth={4} />
-                        </div>
-                        <span className="leading-tight">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <button
-                  disabled={isLowerOrEqual}
-                  onClick={() => handlePlanClick(plan)}
-                  className={`w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${
-                    isLowerOrEqual
-                      ? 'bg-slate-100 text-[#9CA3AF] cursor-not-allowed'
-                      : 'bg-[#16A34A] text-white hover:bg-green-700'
-                  }`}
-                >
-                  {isCurrent ? 'Active Tier' : isLowerTier ? 'Unlocked' : plan.id === 'free' ? 'Default Access' : 'Authorize Upgrade'}
-                </button>
+                 <div className="mt-auto pt-8">
+                    <button
+                       onClick={() => handlePlanClick(plan)}
+                       disabled={isCurrent || isLowerTier}
+                       className={`w-full py-3.5 rounded-full text-[13px] font-bold transition-all flex items-center justify-center
+                          ${isCurrent ? 'bg-white border-2 border-slate-200 text-[#111827]' : 
+                            isLowerTier ? 'bg-slate-100 text-slate-400' :
+                            isPopular ? 'bg-[#047857] hover:bg-[#065f46] text-white shadow-md' :
+                            'bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#111827]'
+                          }
+                       `}
+                    >
+                       {isCurrent ? 'Current Plan' : isLowerTier ? 'Plan Downgrade Locked' : 'Upgrade Now'}
+                    </button>
+                 </div>
               </div>
             );
           })}
       </div>
-
-      <div className="max-w-4xl mx-auto mt-12 mb-20">
-        <div className="bg-white rounded-3xl p-8 md:p-10 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-10">
-          <div className="flex-1 text-center md:text-left">
-            <h4 className="text-xl font-bold text-[#111827] mb-3">Institutional Security</h4>
-            <p className="text-[#6B7280] text-sm leading-relaxed mb-6 font-medium">
-              All transactions are encrypted and processed verified via our core partners. No hidden deductions, seamless direct bank settlements.
-            </p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-3">
-              <div className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-[#6B7280] flex items-center gap-2">
-                <Shield size={14} className="text-[#16A34A]" /> AES-256
-              </div>
-              <div className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-[#6B7280] flex items-center gap-2">
-                <Check size={14} className="text-[#16A34A]" /> PCI-DSS
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
-             {['Korapay', 'Visa', 'Mastercard', 'Bank Transfer'].map(p => (
-                <div key={p} className="h-12 w-full md:w-32 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">
-                  {p}
-                </div>
-             ))}
-          </div>
-        </div>
-      </div>
-
-      <PaymentModal isOpen={!!selectedPlan} onClose={() => setSelectedPlan(null)} plan={selectedPlan!} />
+      
+      {selectedPlan && (
+        <PaymentModal
+          isOpen={!!selectedPlan}
+          onClose={() => setSelectedPlan(null)}
+          plan={selectedPlan}
+        />
+      )}
     </div>
   );
 };

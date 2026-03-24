@@ -150,57 +150,44 @@ const Referrals: React.FC = () => {
            <button className="text-[13px] font-bold text-[#047857] hover:text-green-800 transition-colors flex items-center gap-1 group">
              View all <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
            </button>
-        </div>
-
-        <div className="space-y-4">
+        </div>        <div className="space-y-4">
           {stats.referralList.length > 0 ? stats.referralList.map((ref, idx) => (
-             <div key={ref.id || idx} className="bg-white border border-slate-100 rounded-2xl p-5 flex items-center justify-between shadow-sm">
+             <div key={ref.id || idx} className="bg-white border border-slate-100 rounded-[24px] p-6 flex flex-col md:flex-row md:items-center justify-between shadow-sm transition-all hover:shadow-md gap-4">
                <div className="flex items-center gap-5">
-                 <div className={`w-12 h-12 rounded-full flex items-center justify-center text-[13px] font-black shadow-inner ${
-                    idx % 3 === 0 ? 'bg-rose-100 text-rose-700' :
-                    idx % 2 === 0 ? 'bg-[#DCFCE7] text-[#16A34A]' : 'bg-blue-100 text-blue-700'
+                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-[15px] font-black ${
+                    ref.planId === 'free' ? 'bg-slate-50 text-slate-500 border border-slate-200' :
+                    ref.planId === 'starter' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
+                    ref.planId === 'pro' ? 'bg-[#DCFCE7] text-[#16A34A] border border-green-100' :
+                    'bg-purple-50 text-purple-600 border border-purple-100'
                  }`}>
                    {ref.name.substring(0, 2).toUpperCase()}
                  </div>
                  <div>
-                   <p className="text-[15px] font-extrabold text-[#111827] mb-0.5">{ref.name}</p>
-                   <p className="text-[11px] font-medium text-slate-500">Joined {ref.date || 'recently'}</p>
+                   <p className="text-lg font-bold text-[#111827] tracking-tight mb-1">{ref.name}</p>
+                   <div className="flex items-center gap-2">
+                     <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                        ref.planId === 'free' ? 'bg-slate-100 text-slate-600' :
+                        'bg-[#16A34A] text-white shadow-sm'
+                     }`}>
+                       {ref.planId} Plan
+                     </span>
+                     <span className="text-[12px] font-medium text-[#6B7280]">Joined {ref.date || 'recently'}</span>
+                   </div>
                  </div>
                </div>
-               <div className="text-right">
-                 <p className="text-[16px] font-extrabold text-[#047857] font-mono tracking-tight leading-none mb-1">
-                   ₦{Number(ref.expectedCommission || 0).toFixed(2)}
+               <div className="text-left md:text-right pt-4 md:pt-0 border-t border-slate-100 md:border-0 md:pl-6">
+                 <p className="text-xl font-black text-[#16A34A] tracking-tight mb-1">
+                   ₦{Number(ref.expectedCommission || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                  </p>
-                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">COMMISSION</p>
+                 <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Expected Yield</p>
                </div>
              </div>
           )) : (
-            <>
-              {/* Dummy data to show UI match if real list is empty */}
-              {[
-                { name: 'John Doe', time: '2 hours ago', amount: '1,250.00', color: 'bg-rose-100 text-rose-700' },
-                { name: 'Amina S.', time: '1 day ago', amount: '4,500.00', color: 'bg-[#DCFCE7] text-[#16A34A]' },
-                { name: 'Chidi K.', time: '3 days ago', amount: '850.00', color: 'bg-[#DCFCE7] text-[#16A34A]' },
-              ].map((ref, idx) => (
-                <div key={idx} className="bg-white border border-slate-100 rounded-2xl p-5 flex items-center justify-between shadow-sm">
-                  <div className="flex items-center gap-5">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-[13px] font-black shadow-inner ${ref.color}`}>
-                      {ref.name.split(' ').map(n=>n[0]).join('')}
-                    </div>
-                    <div>
-                      <p className="text-[15px] font-extrabold text-[#111827] mb-0.5">{ref.name}</p>
-                      <p className="text-[11px] font-medium text-slate-500">Joined {ref.time}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[16px] font-extrabold text-[#047857] font-mono tracking-tight leading-none mb-1">
-                      ₦{ref.amount}
-                    </p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">COMMISSION</p>
-                  </div>
-                </div>
-              ))}
-            </>
+            <div className="bg-slate-50 border border-slate-200 border-dashed rounded-[32px] p-12 text-center flex flex-col items-center justify-center min-h-[250px]">
+               <UserPlus size={48} className="text-slate-300 mb-4" />
+               <h4 className="text-lg font-bold text-[#111827] mb-2">No Referrals Yet</h4>
+               <p className="text-sm font-medium text-[#6B7280] max-w-sm">Share your link to invite new members to the community. You'll see their subscription and growth here.</p>
+            </div>
           )}
         </div>
       </div>
