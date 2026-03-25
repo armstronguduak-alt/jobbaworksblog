@@ -79,7 +79,6 @@ const Home: React.FC = () => {
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12">
         {/* Search Bar */}
         <div className="relative mb-8">
-           <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
            <input 
              type="text" 
              placeholder="Search articles..."
@@ -92,7 +91,7 @@ const Home: React.FC = () => {
                }
                setSearchParams(searchParams);
              }}
-             className="w-full bg-[#F3F4F6] text-[#111827] px-14 py-4 rounded-full text-[15px] font-medium placeholder-slate-400 outline-none focus:ring-2 focus:ring-[#047857]/20 transition-all border-none"
+             className="w-full bg-[#F3F4F6] text-[#111827] px-6 py-4 rounded-full text-[15px] font-medium placeholder-slate-400 outline-none focus:ring-2 focus:ring-[#047857]/20 transition-all border-none"
            />
         </div>
 

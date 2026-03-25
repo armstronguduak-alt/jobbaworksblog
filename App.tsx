@@ -37,50 +37,51 @@ import AdminTasks from './pages/Admin/AdminTasks';
 import AdminRoute from './components/AdminRoute';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
-
+import AdsterraPopunder from './components/AdsterraPopunder';
+import AdsterraBanner from './components/AdsterraBanner';
 const Footer: React.FC = () => (
-  <footer className="bg-emerald-50 border-t border-emerald-100 py-20 mt-20 font-sans">
+  <footer className="bg-[#f0fdf4] border-t border-emerald-100 py-10 mt-20 font-sans">
     <div className="max-w-7xl mx-auto px-4 md:px-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-12 mb-16">
-        <div className="md:col-span-1">
-          <Link to="/" className="text-2xl font-extrabold tracking-tight mb-6 flex items-center gap-2">
+      <div className="grid grid-cols-4 md:grid-cols-4 gap-x-2 gap-y-0 mb-8 items-start">
+        <div className="col-span-1 pr-2">
+          <Link to="/" className="text-[13px] md:text-xl font-extrabold tracking-tight mb-3 flex items-center gap-1.5 md:gap-2">
             <img 
               src="/logo.png" 
               alt="JobbaWorks Logo" 
-              className="w-8 h-8 rounded object-cover"
+              className="w-5 h-5 md:w-7 md:h-7 rounded object-cover"
             />
-            <span><span className="text-[#16A34A]">Jobba</span><span className="text-black">Works</span></span>
+            <span><span className="text-[#16A34A]">Jobba</span><span className="text-black hidden sm:inline">Works</span></span>
           </Link>
-          <p className="text-slate-500 text-sm leading-relaxed mb-6">
+          <p className="text-slate-500 text-[9px] md:text-xs leading-relaxed hidden sm:block">
             A high-performance blog and earnings platform for deep thinkers, creators, and professionals.
           </p>
         </div>
-        <div>
-          <h4 className="font-bold text-slate-900 mb-6">Explore</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+        <div className="text-center sm:text-left">
+          <h4 className="font-bold text-slate-900 mb-3 md:mb-5 text-[11px] md:text-sm">Explore</h4>
+          <ul className="space-y-2 md:space-y-3 text-[10px] md:text-sm text-slate-500">
             <li><Link to="/category/Technology" className="hover:text-[#16A34A] transition-colors">Technology</Link></li>
             <li><Link to="/plans" className="hover:text-[#16A34A] transition-colors">Plans</Link></li>
             <li><Link to="/promotional" className="hover:text-[#16A34A] transition-colors">Promotional</Link></li>
           </ul>
         </div>
-        <div>
-          <h4 className="font-bold text-slate-900 mb-6">Dashboard</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+        <div className="text-center sm:text-left">
+          <h4 className="font-bold text-slate-900 mb-3 md:mb-5 text-[11px] md:text-sm">Dashboard</h4>
+          <ul className="space-y-2 md:space-y-3 text-[10px] md:text-sm text-slate-500">
             <li><Link to="/dashboard" className="hover:text-[#16A34A] transition-colors">Overview</Link></li>
             <li><Link to="/dashboard/wallet" className="hover:text-[#16A34A] transition-colors">Wallet</Link></li>
             <li><Link to="/dashboard/referrals" className="hover:text-[#16A34A] transition-colors">Referrals</Link></li>
           </ul>
         </div>
-        <div>
-          <h4 className="font-bold text-slate-900 mb-6">Network</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+        <div className="text-center sm:text-left">
+          <h4 className="font-bold text-slate-900 mb-3 md:mb-5 text-[11px] md:text-sm">Network</h4>
+          <ul className="space-y-2 md:space-y-3 text-[10px] md:text-sm text-slate-500">
             <li><Link to="/privacy" className="hover:text-[#16A34A] transition-colors">Privacy Policy</Link></li>
             <li><Link to="/terms" className="hover:text-[#16A34A] transition-colors">Terms of Service</Link></li>
           </ul>
         </div>
       </div>
-      <div className="pt-8 border-t border-emerald-200 flex flex-col md:flex-row justify-between gap-4">
-        <p className="text-sm text-slate-400">© 2024 <span className="text-[#16A34A]">Jobba</span><span className="text-black">Works</span> Inc. Professional Results.</p>
+      <div className="pt-6 border-t border-emerald-200">
+        <p className="text-[10px] md:text-sm text-slate-400">© 2024 <span className="text-[#16A34A]">Jobba</span><span className="text-black">Works</span> Inc. Professional Results.</p>
       </div>
     </div>
   </footer>
@@ -99,7 +100,16 @@ const Placeholder = ({ title }: { title: string }) => (
 const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
+      <AdsterraPopunder />
       <Navbar />
+      <Routes>
+        <Route path="/dashboard/*" element={null} />
+        <Route path="/admin/*" element={null} />
+        <Route path="/login" element={null} />
+        <Route path="/register" element={null} />
+        <Route path="/forgot-password" element={null} />
+        <Route path="*" element={<AdsterraBanner />} />
+      </Routes>
       <main className="flex-1">
         {children}
       </main>

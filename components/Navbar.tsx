@@ -95,12 +95,16 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <button 
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-          >
-            <Search size={20} />
-          </button>
+          <form onSubmit={handleSearch} className="hidden lg:flex items-center relative">
+            <Search size={16} className="absolute left-3 text-slate-400" />
+            <input 
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search articles..."
+              className="pl-9 pr-4 py-2 border border-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-emerald-600 text-sm w-48 xl:w-64 transition-all"
+            />
+          </form>
 
           {user ? (
             <div className="relative">
@@ -159,6 +163,16 @@ const Navbar: React.FC = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-emerald-50 max-h-[80vh] overflow-y-auto animate-in slide-in-from-top duration-300 shadow-xl z-40">
           <div className="flex flex-col p-4 space-y-2">
+            <form onSubmit={(e) => { handleSearch(e); setIsMobileMenuOpen(false); }} className="relative mb-2">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input 
+                type="text" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search articles..."
+                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-emerald-600 text-sm"
+              />
+            </form>
             <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl">Home</Link>
             <Link to="/plans" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl">Plans</Link>
             <button onClick={() => { setIsCommunityModalOpen(true); setIsMobileMenuOpen(false); }} className="text-left px-4 py-3 font-bold text-emerald-600 hover:bg-emerald-50 rounded-xl">Community Updates</button>
@@ -178,21 +192,6 @@ const Navbar: React.FC = () => {
         </div>
       )}
 
-      {isSearchOpen && (
-        <div className="absolute top-full left-0 w-full bg-white border-b border-emerald-50 p-4 animate-in slide-in-from-top duration-300">
-          <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex gap-2">
-            <input 
-              type="text" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search articles..."
-              autoFocus
-              className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 text-slate-900"
-            />
-            <button type="submit" className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold">Search</button>
-          </form>
-        </div>
-      )}
 
       <CommunityModal 
         isOpen={isCommunityModalOpen} 

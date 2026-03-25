@@ -4,6 +4,7 @@ import { getPostInsights } from '../services/geminiService';
 import { useAuth } from '../contexts/AuthContext';
 import ClaimRewardModal from '../components/ClaimRewardModal';
 import LimitReachedModal from '../components/LimitReachedModal';
+import AdsterraNativeBanner from '../components/AdsterraNativeBanner';
 import {
   Clock,
   MessageSquare,
@@ -196,6 +197,8 @@ const PostDetail: React.FC = () => {
         ) : (
           <div className="prose prose-slate prose-lg max-w-none serif-text leading-relaxed text-slate-800" dangerouslySetInnerHTML={{ __html: post.content }} />
         )}
+
+        <AdsterraNativeBanner />
 
         {post.isStory && post.chapters.length > 1 && (
           <div className="mt-16 py-10 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">
