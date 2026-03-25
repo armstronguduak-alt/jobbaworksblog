@@ -29,7 +29,7 @@ const EMPTY_LEADERBOARD: LeaderboardData = {
 };
 
 const Leaderboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, stats } = useAuth();
   const [period, setPeriod] = useState<LeaderboardPeriod>('weekly');
   const [rankings, setRankings] = useState<LeaderboardData>(EMPTY_LEADERBOARD);
   const [loading, setLoading] = useState(true);
@@ -120,58 +120,70 @@ const Leaderboard: React.FC = () => {
         </div>
 
         {/* Podium Area */}
-        {topUsers.length >= 3 && (
-          <div className="flex items-end justify-center mb-16 relative h-[300px]">
-             
-             {/* Rank 2 (Left) */}
-             <div className="flex flex-col items-center absolute left-[5%] bottom-0 z-10">
-                <div className="relative mb-2">
-                  <div className="w-20 h-20 rounded-full border-[3px] border-white shadow-lg overflow-hidden bg-slate-200">
-                     <img src={topUsers[1].avatar} alt={topUsers[1].name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-slate-100 rounded-full shadow border-2 border-white flex items-center justify-center text-[12px] font-bold text-[#111827]">
-                    2
-                  </div>
-                </div>
-                <h3 className="text-sm font-bold text-[#111827] mt-3 whitespace-nowrap">{topUsers[1].name.split(' ')[0]} {topUsers[1].name.split(' ')[1]?.charAt(0) || ''}.</h3>
-                <p className="text-[#16A34A] font-bold text-sm tracking-tight">{formatAmount(topUsers[1].earnings)}</p>
-                <div className="w-[60px] h-20 bg-slate-100 rounded-t-[10px] mt-3"></div>
-             </div>
+        <div className="flex items-end justify-center mb-16 relative min-h-[300px]">
+           {(topUsers.length > 0) ? (
+             <>
+               {/* Rank 2 (Left) */}
+               {topUsers[1] && (
+                 <div className="flex flex-col items-center absolute left-[5%] bottom-0 z-10 w-1/3">
+                    <div className="relative mb-2">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-[3px] border-white shadow-lg overflow-hidden bg-slate-200">
+                         <img src={topUsers[1].avatar} alt={topUsers[1].name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-slate-100 rounded-full shadow border-2 border-white flex items-center justify-center text-[12px] font-bold text-[#111827]">
+                        2
+                      </div>
+                    </div>
+                    <h3 className="text-xs md:text-sm font-bold text-[#111827] mt-3 truncate w-full text-center px-1">{topUsers[1].name.split(' ')[0]}</h3>
+                    <p className="text-[#16A34A] font-bold text-[11px] md:text-sm tracking-tight">{formatAmount(topUsers[1].earnings)}</p>
+                    <div className="w-[50px] md:w-[60px] h-[60px] md:h-20 bg-slate-100 rounded-t-[10px] mt-3 shadow-inner"></div>
+                 </div>
+               )}
 
-             {/* Rank 1 (Center) */}
-             <div className="flex flex-col items-center absolute left-1/2 -translate-x-1/2 bottom-0 z-20">
-                <div className="relative mb-2">
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-yellow-400 border-[3px] border-white flex items-center justify-center z-10 shadow-sm">
-                    <Star size={14} className="text-white fill-white" />
-                  </div>
-                  <div className="w-[100px] h-[100px] rounded-full border-4 border-[#16A34A] shadow-xl overflow-hidden bg-slate-200">
-                     <img src={topUsers[0].avatar} alt={topUsers[0].name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="absolute -bottom-2 -right-1 w-8 h-8 bg-[#16A34A] rounded-full shadow border-2 border-white flex items-center justify-center text-[14px] font-bold text-white">
-                    1
-                  </div>
-                </div>
-                <h3 className="text-base font-extrabold text-[#111827] mt-3 whitespace-nowrap">{topUsers[0].name}</h3>
-                <p className="text-[#16A34A] font-extrabold text-[17px] tracking-tight">{formatAmount(topUsers[0].earnings)}</p>
-                <div className="w-[85px] h-[120px] bg-[#16A34A] rounded-t-[14px] mt-3 shadow-sm"></div>
-             </div>
+               {/* Rank 1 (Center) */}
+               {topUsers[0] && (
+                 <div className="flex flex-col items-center absolute left-1/2 -translate-x-1/2 bottom-0 z-20 w-1/3">
+                    <div className="relative mb-2">
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-yellow-400 border-[3px] border-white flex items-center justify-center z-10 shadow-sm">
+                        <Star size={14} className="text-white fill-white" />
+                      </div>
+                      <div className="w-20 h-20 md:w-[100px] md:h-[100px] rounded-full border-4 border-[#16A34A] shadow-xl overflow-hidden bg-slate-200">
+                         <img src={topUsers[0].avatar} alt={topUsers[0].name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="absolute -bottom-2 -right-1 w-8 h-8 bg-[#16A34A] rounded-full shadow border-2 border-white flex items-center justify-center text-[14px] font-bold text-white">
+                        1
+                      </div>
+                    </div>
+                    <h3 className="text-sm md:text-base font-extrabold text-[#111827] mt-3 truncate w-full text-center px-1">{topUsers[0].name.split(' ')[0]}</h3>
+                    <p className="text-[#16A34A] font-extrabold text-sm md:text-[17px] tracking-tight">{formatAmount(topUsers[0].earnings)}</p>
+                    <div className="w-[70px] md:w-[85px] h-[100px] md:h-[120px] bg-[#16A34A] rounded-t-[14px] mt-3 shadow-sm border border-green-700/20"></div>
+                 </div>
+               )}
 
-             {/* Rank 3 (Right) */}
-             <div className="flex flex-col items-center absolute right-[5%] bottom-0 z-10">
-                <div className="relative mb-2">
-                  <div className="w-20 h-20 rounded-full border-[3px] border-white shadow-lg overflow-hidden bg-slate-200">
-                     <img src={topUsers[2].avatar} alt={topUsers[2].name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-slate-100 rounded-full shadow border-2 border-white flex items-center justify-center text-[12px] font-bold text-[#111827]">
-                    3
-                  </div>
-                </div>
-                <h3 className="text-sm font-bold text-[#111827] mt-3 whitespace-nowrap">{topUsers[2].name.split(' ')[0]} {topUsers[2].name.split(' ')[1]?.charAt(0) || ''}.</h3>
-                <p className="text-[#16A34A] font-bold text-sm tracking-tight">{formatAmount(topUsers[2].earnings)}</p>
-                <div className="w-[60px] h-[55px] bg-slate-100 rounded-t-[10px] mt-3"></div>
+               {/* Rank 3 (Right) */}
+               {topUsers[2] && (
+                 <div className="flex flex-col items-center absolute right-[5%] bottom-0 z-10 w-1/3">
+                    <div className="relative mb-2">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-[3px] border-white shadow-lg overflow-hidden bg-slate-200">
+                         <img src={topUsers[2].avatar} alt={topUsers[2].name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-slate-100 rounded-full shadow border-2 border-white flex items-center justify-center text-[12px] font-bold text-[#111827]">
+                        3
+                      </div>
+                    </div>
+                    <h3 className="text-xs md:text-sm font-bold text-[#111827] mt-3 truncate w-full text-center px-1">{topUsers[2].name.split(' ')[0]}</h3>
+                    <p className="text-[#16A34A] font-bold text-[11px] md:text-sm tracking-tight">{formatAmount(topUsers[2].earnings)}</p>
+                    <div className="w-[50px] md:w-[60px] h-[40px] md:h-[55px] bg-slate-100 rounded-t-[10px] mt-3 shadow-inner"></div>
+                 </div>
+               )}
+             </>
+           ) : (
+             <div className="flex flex-col items-center justify-center h-[300px] text-slate-400">
+               <Star size={48} className="text-slate-200 mb-4" />
+               <p className="text-sm font-bold uppercase tracking-widest text-slate-400">No participants yet</p>
              </div>
-          </div>
-        )}
+           )}
+        </div>
 
         {/* Regular List */}
         <div className="space-y-4 mb-24">
@@ -196,8 +208,8 @@ const Leaderboard: React.FC = () => {
 
         {/* User Ranking Footer */}
         {currentUserRank && (
-          <div className="fixed bottom-0 left-0 w-full p-4 md:p-6 pb-6 md:pb-8 flex justify-center z-40 bg-gradient-to-t from-[#F9FAFB] via-[#F9FAFB] to-transparent">
-            <div className="w-full max-w-[500px] bg-[#047857] text-white rounded-[24px] p-5 flex items-center shadow-2xl relative overflow-hidden">
+          <div className="fixed bottom-0 left-0 w-full p-4 md:p-6 pb-6 md:pb-8 flex justify-center z-40 bg-gradient-to-t from-[#F9FAFB] via-[#F9FAFB] to-transparent pointer-events-none">
+            <div className="w-full max-w-[500px] bg-[#047857] text-white rounded-[24px] p-5 flex items-center shadow-2xl relative overflow-hidden pointer-events-auto">
                <div className="w-12 h-12 bg-white/20 rounded-full flex flex-col items-center justify-center shrink-0">
                   <span className="font-extrabold text-sm">{currentUserRank}</span>
                </div>
@@ -206,7 +218,7 @@ const Leaderboard: React.FC = () => {
                  <p className="text-[11px] text-green-100 mt-0.5 leading-tight">Keep earning to climb the ladder!</p>
                </div>
                <div className="text-right">
-                 <p className="font-black text-xl tracking-tight">₦{user?.stats?.totalEarnings?.toLocaleString() || '0'}</p>
+                 <p className="font-black text-xl tracking-tight">₦{stats?.totalEarnings?.toLocaleString() || '0'}</p>
                  <div className="flex items-center justify-end gap-1 mt-0.5 text-[9px] font-bold text-green-200">
                     <TrendingUp size={10} /> TOP 15%
                  </div>

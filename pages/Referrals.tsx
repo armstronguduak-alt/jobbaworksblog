@@ -33,15 +33,15 @@ const Referrals: React.FC = () => {
     <div className="animate-in fade-in duration-500 w-full overflow-x-hidden max-w-5xl mx-auto space-y-6">
       
       {/* Top Green Banner */}
-      <div className="bg-[#16A34A] rounded-2xl p-8 md:p-10 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-sm">
-        <div className="md:w-2/3 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">Grow the Estate Community.</h2>
-          <p className="text-green-50/90 mb-8 text-[15px] leading-relaxed max-w-lg">
+      <div className="bg-[#16A34A] rounded-[32px] p-8 md:p-10 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-sm">
+        <div className="md:w-2/3 relative z-10 w-full min-w-0">
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight break-words">Grow the Estate Community.</h2>
+          <p className="text-green-50/90 mb-8 text-[15px] leading-relaxed max-w-lg break-words">
             Earn 25% from your referrals' earnings. Every successful connection builds wealth for everyone.
           </p>
           <button
             onClick={handleCopyLink}
-            className="bg-white text-[#16A34A] px-5 py-2.5 rounded-full font-bold text-sm hover:bg-green-50 transition-colors flex items-center gap-2 shadow-sm w-fit"
+            className="bg-white text-[#16A34A] px-6 py-4 rounded-xl font-bold text-sm hover:bg-green-50 transition-colors flex items-center gap-2 shadow-sm w-full md:w-fit justify-center"
           >
             <Share2 size={16} /> Share Now
           </button>
@@ -117,22 +117,22 @@ const Referrals: React.FC = () => {
       </div>
 
       {/* Your Personal Referral Link */}
-      <div className="bg-slate-50/80 rounded-2xl p-6 md:p-8 border border-slate-100 mt-8 mb-8">
+      <div className="bg-slate-50/80 rounded-3xl p-6 md:p-8 border border-slate-100 mt-8 mb-8">
         <h4 className="text-[15px] font-bold text-[#111827] mb-4">Your Personal Referral Link</h4>
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="flex-1 w-full bg-white px-5 py-3.5 rounded-full border border-slate-200 text-[13px] text-slate-500 font-medium truncate shadow-sm">
+          <div className="flex-1 min-w-0 w-full bg-white px-5 py-3.5 rounded-2xl border border-slate-200 text-[13px] text-slate-500 font-medium truncate shadow-sm">
             {shareLink}
           </div>
-          <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto w-full sm:w-auto justify-end">
-             <button className="w-12 h-12 bg-[#22C55E] text-white rounded-full flex items-center justify-center hover:bg-green-600 transition-colors shadow-sm">
+          <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto w-full sm:w-auto justify-start sm:justify-end">
+             <button className="w-12 h-12 shrink-0 bg-[#22C55E] text-white rounded-xl flex items-center justify-center hover:bg-green-600 transition-colors shadow-sm">
                <MessageSquare size={18} fill="currentColor" className="text-white" />
              </button>
-             <button className="w-12 h-12 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors shadow-sm">
+             <button className="w-12 h-12 shrink-0 bg-[#0EA5E9] text-white rounded-xl flex items-center justify-center hover:bg-blue-600 transition-colors shadow-sm">
                <Share2 size={18} fill="none" strokeWidth={2.5} />
              </button>
              <button 
                onClick={handleCopyLink}
-               className="px-6 h-12 bg-[#047857] text-white text-[13px] font-bold rounded-full hover:bg-emerald-800 transition-colors shadow-sm"
+               className="flex-1 sm:flex-none px-6 h-12 bg-[#047857] text-white text-[13px] font-bold rounded-xl hover:bg-emerald-800 transition-colors shadow-sm"
              >
                Copy Link
              </button>

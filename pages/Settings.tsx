@@ -104,101 +104,110 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-20 fade-in animate-in">
-      <div>
-        <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight drop-shadow-md">System Parameters</h1>
-        <p className="text-slate-400 font-medium tracking-wide">Manage your node credentials, security, and global preferences.</p>
+    <div className="max-w-4xl mx-auto pb-20 fade-in animate-in">
+      <div className="mb-8 pl-1">
+        <h1 className="text-3xl font-black text-[#111827] mb-2 tracking-tight">System Parameters</h1>
+        <p className="text-sm font-medium text-[#6B7280]">Manage your node credentials, security, and global preferences.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="lg:col-span-2 space-y-6 md:space-y-8">
           {/* Profile Settings */}
-          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
-            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
-              <User size={20} className="text-emerald-600" /> Profile Information
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm">
+            <h2 className="text-lg font-bold text-[#111827] mb-6 flex items-center gap-3">
+              <div className="w-8 h-8 bg-[#DCFCE7] rounded-lg flex items-center justify-center">
+                 <User size={16} className="text-[#16A34A]" />
+              </div>
+              Profile Information
             </h2>
             <form onSubmit={handleSaveProfile} className="space-y-6">
-              <div className="flex items-center gap-6 mb-8">
-                <img src={user?.avatar} alt="Avatar" className="w-20 h-20 rounded-2xl bg-[#141A29]/50 border border-slate-700" />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6 mb-8">
+                <img src={user?.avatar} alt="Avatar" className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 object-cover" />
                 <div>
-                  <button type="button" className="px-4 py-2 bg-[#1A2234] hover:bg-[#141A29] text-slate-300 border border-slate-700 rounded-xl text-sm font-bold transition-colors">
+                  <button type="button" className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#111827] border border-slate-200 rounded-xl text-sm font-bold transition-colors shadow-sm">
                     Change Avatar
                   </button>
-                  <p className="text-xs text-slate-500 mt-2">JPG, GIF or PNG. Max size of 800K</p>
+                  <p className="text-[11px] font-medium text-slate-400 mt-2">JPG, GIF or PNG. Max size of 800K</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Full Name</label>
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Full Name</label>
                   <input 
                     type="text" 
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
+                    className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all font-medium text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email Address</label>
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Email Address</label>
                   <input 
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
+                    className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all font-medium text-sm"
                   />
                 </div>
               </div>
 
               <div className="flex justify-end pt-4">
-                <button type="submit" className="px-6 py-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 rounded-xl font-black transform transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest text-xs">
-                  <Save size={18} /> Save Changes
+                <button type="submit" className="px-6 py-3.5 bg-[#16A34A] text-white hover:bg-green-700 rounded-xl font-bold transition-all active:scale-95 flex items-center gap-2 text-[13px] shadow-sm">
+                  <Save size={16} /> Save Changes
                 </button>
               </div>
             </form>
           </div>
 
           {/* Security Settings */}
-          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
-            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
-              <Shield size={20} className="text-emerald-600" /> Security
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm">
+            <h2 className="text-lg font-bold text-[#111827] mb-6 flex items-center gap-3">
+              <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
+                 <Shield size={16} className="text-indigo-600" />
+              </div>
+              Security
             </h2>
             <form onSubmit={handleSaveSecurity} className="space-y-6">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Current Password</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Current Password</label>
                 <input 
                   type="password" 
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
+                  className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 focus:bg-white outline-none transition-all font-medium text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">New Password</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">New Password</label>
                 <input 
                   type="password" 
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
+                  className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 focus:bg-white outline-none transition-all font-medium text-sm"
                 />
               </div>
 
               <div className="flex justify-end pt-4">
-                <button type="submit" className="px-6 py-3 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 uppercase tracking-widest text-xs font-black flex items-center gap-2">
-                  <Lock size={18} /> Update Password
+                <button type="submit" className="px-6 py-3.5 bg-indigo-50 text-indigo-700 border border-indigo-100 hover:bg-indigo-100 text-[13px] font-bold rounded-xl flex items-center gap-2 transition-colors">
+                  <Lock size={16} /> Update Password
                 </button>
               </div>
             </form>
           </div>
 
           {/* Payout Methods */}
-          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
-            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
-              <CreditCard size={20} className="text-emerald-600" /> Payout Methods
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm">
+            <h2 className="text-lg font-bold text-[#111827] mb-6 flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                 <CreditCard size={16} className="text-blue-600" />
+              </div>
+              Payout Methods
             </h2>
-            <form onSubmit={handleSavePayouts} className="space-y-6">
+            <form onSubmit={handleSavePayouts} className="space-y-8">
               <div>
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  <img src="/payment-logos/opay.svg" alt="OPAY" className="w-5 h-5 rounded-md" />
+                <label className="flex items-center gap-2 text-[11px] font-bold text-[#111827] uppercase tracking-widest mb-3 ml-1">
+                  <img src="/payment-logos/opay.svg" alt="OPAY" className="w-5 h-5 rounded-md object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
                   OPAY Account
                 </label>
                 <input 
@@ -206,18 +215,18 @@ const Settings: React.FC = () => {
                   value={payouts.opayAccount}
                   onChange={(e) => setPayouts(prev => ({...prev, opayAccount: e.target.value}))}
                   placeholder="e.g. John Doe - 8123456789"
-                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all mb-2"
+                  className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all font-medium text-sm mb-2"
                 />
                 {!payouts.opayAccount && (
-                  <p className="text-xs text-slate-500">
-                    Don't have an account? <a href="https://opay.ng/s/2dk42" target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-bold hover:underline inline-flex items-center gap-1">Create OPAY account <ExternalLink size={10} /></a>
+                  <p className="text-[11px] font-medium text-slate-500 ml-1">
+                    Don't have an account? <a href="https://opay.ng/s/2dk42" target="_blank" rel="noopener noreferrer" className="text-[#16A34A] font-bold hover:underline inline-flex items-center gap-1">Create OPAY account <ExternalLink size={10} /></a>
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  <img src="/payment-logos/usdt.svg" alt="USDT" className="w-5 h-5 rounded-md" />
+                <label className="flex items-center gap-2 text-[11px] font-bold text-[#111827] uppercase tracking-widest mb-3 ml-1">
+                  <img src="/payment-logos/usdt.svg" alt="USDT" className="w-5 h-5 rounded-md object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
                   USDT Wallet Address (TRC20)
                 </label>
                 <input 
@@ -225,13 +234,13 @@ const Settings: React.FC = () => {
                   value={payouts.usdtWallet}
                   onChange={(e) => setPayouts(prev => ({...prev, usdtWallet: e.target.value}))}
                   placeholder="T..."
-                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all"
+                  className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all font-medium text-sm"
                 />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  <img src="/payment-logos/minipay.svg" alt="MiniPay" className="w-5 h-5 rounded-md" />
+                <label className="flex items-center gap-2 text-[11px] font-bold text-[#111827] uppercase tracking-widest mb-3 ml-1">
+                  <img src="/payment-logos/minipay.svg" alt="MiniPay" className="w-5 h-5 rounded-md object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
                   MiniPay UID / Details
                 </label>
                 <input 
@@ -239,18 +248,18 @@ const Settings: React.FC = () => {
                   value={payouts.minipayDetails}
                   onChange={(e) => setPayouts(prev => ({...prev, minipayDetails: e.target.value}))}
                   placeholder="UID..."
-                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all mb-2"
+                  className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all font-medium text-sm mb-2"
                 />
                 {!payouts.minipayDetails && (
-                  <p className="text-xs text-slate-500">
-                    Don't have an account? <a href="https://link.minipay.xyz/invite?ref=WeBQSVr8" target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-bold hover:underline inline-flex items-center gap-1">Create MiniPay account <ExternalLink size={10} /></a>
+                  <p className="text-[11px] font-medium text-slate-500 ml-1">
+                    Don't have an account? <a href="https://link.minipay.xyz/invite?ref=WeBQSVr8" target="_blank" rel="noopener noreferrer" className="text-[#16A34A] font-bold hover:underline inline-flex items-center gap-1">Create MiniPay account <ExternalLink size={10} /></a>
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  <Lock size={16} className="text-emerald-600" />
+                <label className="flex items-center gap-2 text-[11px] font-bold text-[#111827] uppercase tracking-widest mb-3 ml-1">
+                  <Lock size={14} className="text-[#16A34A]" />
                   Your 4-Digit Payout PIN
                 </label>
                 <input 
@@ -259,77 +268,83 @@ const Settings: React.FC = () => {
                   value={payoutPin}
                   onChange={(e) => setPayoutPin(e.target.value.replace(/\D/g, ''))}
                   placeholder="e.g. 1234"
-                  className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all tracking-[0.5em] font-mono text-xl mb-2"
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 text-[#111827] rounded-2xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all tracking-[0.75em] font-mono text-xl mb-3 text-center"
                 />
-                <p className="text-xs text-rose-500 font-bold">Never share this PIN! It is required to approve all withdrawals.</p>
+                <p className="text-[11px] text-rose-500 font-bold ml-1 text-center">Never share this PIN! It is required to approve all withdrawals.</p>
               </div>
 
               <div className="flex justify-end pt-4">
-                <button type="submit" className="px-6 py-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 rounded-xl font-black transform transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest text-xs">
-                  <Save size={18} /> Save Payout Methods
+                <button type="submit" className="px-6 py-3.5 bg-[#16A34A] text-white hover:bg-green-700 rounded-xl font-bold transition-all active:scale-95 flex items-center gap-2 text-[13px] shadow-sm w-full md:w-auto justify-center">
+                  <Save size={16} /> Save Payout Methods
                 </button>
               </div>
             </form>
           </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
           {/* Notifications */}
-          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
-            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
-              <Bell size={20} className="text-emerald-600" /> Notifications
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm">
+            <h2 className="text-lg font-bold text-[#111827] mb-6 flex items-center gap-3">
+              <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
+                 <Bell size={16} className="text-amber-500" />
+              </div>
+              Notifications
             </h2>
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-black text-white">Email Alerts</p>
-                  <p className="text-xs text-slate-500">Receive updates via email</p>
+                  <p className="font-bold text-sm text-[#111827]">Email Alerts</p>
+                  <p className="text-[11px] font-medium text-slate-500 mt-0.5">Receive updates via email</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" checked={notifications.emailAlerts} onChange={() => setNotifications(prev => ({...prev, emailAlerts: !prev.emailAlerts}))} />
-                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-200 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16A34A]"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-black text-white">Push Notifications</p>
-                  <p className="text-xs text-slate-500">In-app alerts</p>
+                  <p className="font-bold text-sm text-[#111827]">Push Notifications</p>
+                  <p className="text-[11px] font-medium text-slate-500 mt-0.5">In-app alerts</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" checked={notifications.pushNotifications} onChange={() => setNotifications(prev => ({...prev, pushNotifications: !prev.pushNotifications}))} />
-                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-200 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16A34A]"></div>
                 </label>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-black text-white">Weekly Digest</p>
-                  <p className="text-xs text-slate-500">Summary of your activity</p>
+                  <p className="font-bold text-sm text-[#111827]">Weekly Digest</p>
+                  <p className="text-[11px] font-medium text-slate-500 mt-0.5">Summary of your activity</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" checked={notifications.weeklyDigest} onChange={() => setNotifications(prev => ({...prev, weeklyDigest: !prev.weeklyDigest}))} />
-                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-200 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16A34A]"></div>
                 </label>
               </div>
             </div>
           </div>
 
           {/* Preferences */}
-          <div className="bg-[#0A0D14]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800 p-8 shadow-xl">
-            <h2 className="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
-              <Globe size={20} className="text-emerald-600" /> Preferences
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm">
+            <h2 className="text-lg font-bold text-[#111827] mb-6 flex items-center gap-3">
+              <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
+                 <Globe size={16} className="text-purple-600" />
+              </div>
+              Preferences
             </h2>
             <div className="space-y-6">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Language</label>
-                <select className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all appearance-none">
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Language</label>
+                <select className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all appearance-none font-medium text-sm">
                   <option>English (US)</option>
                   <option>French</option>
                   <option>Spanish</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Timezone</label>
-                <select className="w-full px-4 py-3 bg-[#141A29]/50 border border-slate-700 text-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none transition-all appearance-none">
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Timezone</label>
+                <select className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 text-[#111827] rounded-xl focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] focus:bg-white outline-none transition-all appearance-none font-medium text-sm">
                   <option>UTC (GMT+0)</option>
                   <option>EST (GMT-5)</option>
                   <option>PST (GMT-8)</option>
