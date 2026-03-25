@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import {
   AuthUser,
   UserStats,
@@ -143,7 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const db = useMemo(() => supabase as any, []);
 
-  const hydratePosts = async (viewerId?: string, viewerRole: 'admin' | 'moderator' | 'user' = 'user') => {
+  const hydratePosts = useCallback(async (viewerId?: string, viewerRole: 'admin' | 'moderator' | 'user' = 'user') => {
     const { data: postRows, error: postsError } = await db
       .from('posts')
       .select('*')
@@ -231,9 +231,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     setPosts(mappedPosts);
-  };
+  }, [db]);
 
-  const loadSystemData = async () => {
+  const loadSystemData = useCallback(async () => {
     const [plansRes, categoriesRes, settingsRes] = await Promise.all([
       db.from('subscription_plans').select('*').order('price', { ascending: true }),
       db.from('categories').select('name').eq('is_active', true).order('name'),
@@ -247,9 +247,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (toggles && typeof toggles === 'object') {
       setPageToggles({ ...DEFAULT_PAGE_TOGGLES, ...toggles });
     }
-  };
+  }, [db]);
 
-  const hydrateUserAndStats = async (userId: string) => {
+  const hydrateUserAndStats = useCallback(async (userId: string) => {
     const [
       profileRes,
       roleRes,
@@ -409,9 +409,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     await hydratePosts(userId, role);
-  };
+  }, [db, hydratePosts, systemPlans]);
 
-  const buildFallbackUserFromSession = (sessionUser: any): AuthUser => {
+  const buildFallbackUserFromSession = useCallback((sessionUser: any): AuthUser => {
     const metadata = sessionUser?.user_metadata || {};
     const fallbackName = (sessionUser?.email || 'New User').split('@')[0] || 'New User';
     const safeName = (metadata.name || fallbackName).toString();
@@ -434,9 +434,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       completedCommentPosts: [],
       claimedAuthorPosts: [],
     };
-  };
+  }, []);
 
-  const ensureMyAccount = async (sessionUser: any) => {
+  const ensureMyAccount = useCallback(async (sessionUser: any) => {
     const metadata = sessionUser?.user_metadata || {};
     const fallbackName = (sessionUser?.email || 'New User').split('@')[0] || 'New User';
     const safeName = (metadata.name || fallbackName).toString();
@@ -460,9 +460,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) {
       throw new Error(error.message || 'Failed to initialize account records');
     }
-  };
+  }, [db]);
 
-  const refreshAppData = async (userId?: string) => {
+  const refreshAppData = useCallback(async (userId?: string) => {
     await loadSystemData();
     if (userId) {
       await hydrateUserAndStats(userId);
@@ -471,9 +471,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setStats(EMPTY_STATS);
       setAllUsers([]);
     }
-  };
+  }, [loadSystemData, hydrateUserAndStats, hydratePosts]);
 
-  const hydrateSessionState = async (session: any) => {
+  const hydrateSessionState = useCallback(async (session: any) => {
     if (session?.user) {
       try {
         await ensureMyAccount(session.user);
@@ -495,7 +495,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setUser(null);
     await refreshAppData();
-  };
+  }, [ensureMyAccount, refreshAppData, buildFallbackUserFromSession, hydratePosts]);
 
   useEffect(() => {
     let mounted = true;
@@ -536,27 +536,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    const bootstrap = async () => {
-      try {
-        const {
-          data: { session },
-        } = await db.auth.getSession();
-
-        if (!mounted) return;
-        await hydrateSafely(session);
-      } catch (error) {
-        console.error('Failed to initialize app state:', error);
-        if (mounted) setIsLoading(false);
-      }
-    };
-
-    void bootstrap();
-
     return () => {
       mounted = false;
       listener?.subscription?.unsubscribe();
     };
-  }, [db]);
+  }, [db, hydrateSessionState, refreshAppData]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -619,9 +603,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (refreshTimer) clearTimeout(refreshTimer);
       db.removeChannel(realtimeChannel);
     };
-  }, [db, user?.id, user?.role]);
+  }, [db, user?.id, user?.role, loadSystemData, hydrateUserAndStats]);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     const normalizedEmail = email.trim().toLowerCase();
     const { data, error } = await db.auth.signInWithPassword({ email: normalizedEmail, password });
     if (error) throw new Error(error.message || 'Invalid credentials');
@@ -638,9 +622,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.warn('Background refresh warning:', err?.message || err);
       });
     }
-  };
+  }, [db, buildFallbackUserFromSession, ensureMyAccount, refreshAppData]);
 
-  const register = async (name: string, username: string, gender: string, email: string, password: string, phone: string, refCode?: string) => {
+  const register = useCallback(async (name: string, username: string, gender: string, email: string, password: string, phone: string, refCode?: string) => {
     if (phone) {
       const { count } = await db.from('profiles').select('*', { count: 'exact', head: true }).eq('phone', phone);
       if (count && count > 0) {
@@ -673,16 +657,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (data.session?.user) {
       await ensureMyAccount(data.session.user);
     }
-  };
+  }, [db, buildFallbackUserFromSession, ensureMyAccount, refreshAppData]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await db.auth.signOut();
     setUser(null);
     setStats(EMPTY_STATS);
     setAllUsers([]);
-  };
+  }, [db, setStats, setAllUsers, setUser]);
 
-  const addReward = async (
+  const addReward = useCallback(async (
     type: 'reading' | 'comment' | 'post_approval',
     key: string,
     customAmount?: number
@@ -725,9 +709,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     return { success: false, message: 'Unsupported reward type.' };
-  };
+  }, [user, db, hydrateUserAndStats, hydratePosts]);
 
-  const submitCommentWithReward = async (postId: string, content: string) => {
+  const submitCommentWithReward = useCallback(async (postId: string, content: string) => {
     if (!user) return { success: false, message: 'User not authenticated' };
 
     const { data: previousCommentReward } = await db.from('comment_earnings').select('id').eq('post_id', postId).eq('user_id', user.id).maybeSingle();
@@ -751,9 +735,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await hydratePosts(user.id, user.role);
 
     return { success: Boolean(data?.success), message: data?.message || 'Comment submitted.' };
-  };
+  }, [user, db, hydrateUserAndStats, hydratePosts]);
 
-  const savePost = async (postData: Partial<Post>) => {
+  const savePost = useCallback(async (postData: Partial<Post>) => {
     if (!user) return;
 
     const categoryRecord = await db.from('categories').select('id').eq('name', postData.category || 'Technology').maybeSingle();
@@ -798,9 +782,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
 
     await hydratePosts(user.id, user.role);
-  };
+  }, [db, user, posts, hydratePosts, moderateContent]);
 
-  const updatePostStatus = async (postId: string, status: PostStatus, category?: string, readingTimeSeconds?: number) => {
+  const updatePostStatus = useCallback(async (postId: string, status: PostStatus, category?: string, readingTimeSeconds?: number) => {
     if (!user) return;
 
     let categoryId: string | null = null;
@@ -855,15 +839,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     await hydratePosts(user.id, user.role);
-  };
+  }, [db, user, posts, hydratePosts]);
 
-  const manageUserStatus = async (userId: string, status: UserStatus) => {
+  const manageUserStatus = useCallback(async (userId: string, status: UserStatus) => {
     const { error } = await db.from('profiles').update({ status }).eq('user_id', userId);
     if (error) throw error;
     if (user?.role === 'admin') await hydrateUserAndStats(user.id);
-  };
+  }, [db, user, hydrateUserAndStats]);
 
-  const updateSystemPlan = async (planId: PlanId, updates: Partial<SubscriptionPlan>) => {
+  const updateSystemPlan = useCallback(async (planId: PlanId, updates: Partial<SubscriptionPlan>) => {
     const payload: any = {};
     if (updates.name !== undefined) payload.name = updates.name;
     if (updates.price !== undefined) payload.price = updates.price;
@@ -877,30 +861,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
 
     await loadSystemData();
-  };
+  }, [db, loadSystemData]);
 
-  const addCategory = async (category: string) => {
+  const addCategory = useCallback(async (category: string) => {
     const slug = category.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
     const { error } = await db.from('categories').insert({ name: category, slug, is_active: true });
     if (error) throw error;
     await loadSystemData();
-  };
+  }, [db, loadSystemData]);
 
-  const editCategory = async (oldCategory: string, newCategory: string) => {
+  const editCategory = useCallback(async (oldCategory: string, newCategory: string) => {
     const slug = newCategory.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
     const { error } = await db.from('categories').update({ name: newCategory, slug }).eq('name', oldCategory);
     if (error) throw error;
     await loadSystemData();
     if (user) await hydratePosts(user.id, user.role);
-  };
+  }, [db, user, loadSystemData, hydratePosts]);
 
-  const deleteCategory = async (category: string) => {
+  const deleteCategory = useCallback(async (category: string) => {
     const { error } = await db.from('categories').delete().eq('name', category);
     if (error) throw error;
     await loadSystemData();
-  };
+  }, [db, loadSystemData]);
 
-  const upgradePlan = async (planId: PlanId) => {
+  const upgradePlan = useCallback(async (planId: PlanId) => {
     if (!user) return false;
 
     const plan = systemPlans[planId];
@@ -954,10 +938,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     await hydrateUserAndStats(user.id);
+    await refreshAppData(user.id);
     return true;
-  };
+  }, [user, systemPlans, db, hydrateUserAndStats, refreshAppData]);
 
-  const requestWithdrawal = async (
+  const requestWithdrawal = useCallback(async (
     amount: number,
     method: string,
     currency: 'naira' | 'usdt' = 'naira',
@@ -1016,27 +1001,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     await hydrateUserAndStats(user.id);
     return { success: true, message: 'Withdrawal processing initiated.' };
-  };
+  }, [db, user, hydrateUserAndStats]);
 
-  const deletePost = async (postId: string) => {
+  const deletePost = useCallback(async (postId: string) => {
     if (!user) return;
     const { error } = await db.from('posts').delete().eq('id', postId);
     if (error) throw error;
     await hydratePosts(user.id, user.role);
-  };
+  }, [db, user, hydratePosts]);
 
-  const viewPost = async (postId: string) => {
+  const viewPost = useCallback(async (postId: string) => {
     try {
+      // @ts-ignore
       const { data, error } = await supabase.rpc('process_article_view', { p_post_id: postId });
-      if (!error && data?.success) {
-        setPosts(prev => prev.map(p => p.id === postId ? { ...p, views: data.views } : p));
+      if (!error && (data as any)?.success) {
+        setPosts(prev => prev.map(p => p.id === postId ? { ...p, views: (data as any).views } : p));
       }
     } catch (err) {
       console.error('Failed to process article view:', err);
     }
-  };
+  }, [supabase, setPosts]);
 
-  const generateArticleFromTopic = async (topic: string, category: string) => {
+  const generateArticleFromTopic = useCallback(async (topic: string, category: string) => {
     if (!user) return { success: false, message: 'Not authenticated' };
 
     try {
@@ -1077,13 +1063,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (err: any) {
       return { success: false, message: err.message || 'Unable to generate article.' };
     }
-  };
+  }, [user, savePost]);
 
-  const setLimitModalShown = () => {
+  const setLimitModalShown = useCallback(() => {
     setUser((prev) => (prev ? { ...prev, lastLimitModalDate: getTodayDate() } : null));
-  };
+  }, []);
 
-  const updatePageToggles = async (toggles: Record<string, boolean>) => {
+  const updatePageToggles = useCallback(async (toggles: Record<string, boolean>) => {
     const { error } = await db
       .from('system_settings')
       .upsert(
@@ -1093,40 +1079,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (error) throw error;
     setPageToggles(toggles);
-  };
+  }, [db, user]);
+
+  const contextValue = useMemo(() => ({
+    user,
+    stats,
+    pageToggles,
+    posts,
+    systemPlans,
+    allUsers,
+    login,
+    register,
+    logout,
+    isLoading,
+    addReward,
+    submitCommentWithReward,
+    upgradePlan,
+    setLimitModalShown,
+    requestWithdrawal,
+    savePost,
+    updatePostStatus,
+    manageUserStatus,
+    updateSystemPlan,
+    categories,
+    addCategory,
+    editCategory,
+    deleteCategory,
+    updatePageToggles,
+    deletePost,
+    generateArticleFromTopic,
+    viewPost,
+  }), [
+    user, stats, pageToggles, posts, systemPlans, allUsers, categories, isLoading,
+    login, register, logout, addReward, submitCommentWithReward, upgradePlan,
+    setLimitModalShown, requestWithdrawal, savePost, updatePostStatus, manageUserStatus,
+    updateSystemPlan, addCategory, editCategory, deleteCategory, updatePageToggles,
+    deletePost, generateArticleFromTopic, viewPost
+  ]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        stats,
-        pageToggles,
-        posts,
-        systemPlans,
-        allUsers,
-        login,
-        register,
-        logout,
-        isLoading,
-        addReward,
-        submitCommentWithReward,
-        upgradePlan,
-        setLimitModalShown,
-        requestWithdrawal,
-        savePost,
-        updatePostStatus,
-        manageUserStatus,
-        updateSystemPlan,
-        categories,
-        addCategory,
-        editCategory,
-        deleteCategory,
-        updatePageToggles,
-        deletePost,
-        generateArticleFromTopic,
-        viewPost,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
