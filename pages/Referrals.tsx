@@ -119,20 +119,20 @@ const Referrals: React.FC = () => {
       {/* Your Personal Referral Link */}
       <div className="bg-slate-50/80 rounded-3xl p-6 md:p-8 border border-slate-100 mt-8 mb-8">
         <h4 className="text-[15px] font-bold text-[#111827] mb-4">Your Personal Referral Link</h4>
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="flex-1 min-w-0 w-full bg-white px-5 py-3.5 rounded-2xl border border-slate-200 text-[13px] text-slate-500 font-medium truncate shadow-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+          <div className="flex-1 min-w-0 w-full bg-white px-4 md:px-5 py-3.5 rounded-2xl border border-slate-200 text-[13px] text-slate-500 font-medium truncate shadow-sm">
             {shareLink}
           </div>
-          <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto w-full sm:w-auto justify-start sm:justify-end">
-             <button className="w-12 h-12 shrink-0 bg-[#22C55E] text-white rounded-xl flex items-center justify-center hover:bg-green-600 transition-colors shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 shrink-0 self-stretch sm:self-auto w-full sm:w-auto justify-start sm:justify-end">
+             <button className="w-11 h-11 md:w-12 md:h-12 shrink-0 bg-[#22C55E] text-white rounded-xl flex items-center justify-center hover:bg-green-600 transition-colors shadow-sm">
                <MessageSquare size={18} fill="currentColor" className="text-white" />
              </button>
-             <button className="w-12 h-12 shrink-0 bg-[#0EA5E9] text-white rounded-xl flex items-center justify-center hover:bg-blue-600 transition-colors shadow-sm">
+             <button className="w-11 h-11 md:w-12 md:h-12 shrink-0 bg-[#0EA5E9] text-white rounded-xl flex items-center justify-center hover:bg-blue-600 transition-colors shadow-sm">
                <Share2 size={18} fill="none" strokeWidth={2.5} />
              </button>
              <button 
                onClick={handleCopyLink}
-               className="flex-1 sm:flex-none px-6 h-12 bg-[#047857] text-white text-[13px] font-bold rounded-xl hover:bg-emerald-800 transition-colors shadow-sm"
+               className="flex-1 sm:flex-none px-4 md:px-6 h-11 md:h-12 bg-[#047857] text-white text-[13px] font-bold rounded-xl hover:bg-emerald-800 transition-colors shadow-sm"
              >
                Copy Link
              </button>
@@ -142,12 +142,12 @@ const Referrals: React.FC = () => {
 
       {/* Recent Referrals */}
       <div className="pt-2">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
            <div>
-             <h4 className="text-[20px] font-bold text-[#111827]">Recent Referrals</h4>
+             <h4 className="text-[18px] md:text-[20px] font-bold text-[#111827]">Recent Referrals</h4>
              <p className="text-[13px] font-medium text-slate-500 mt-1">Keep track of your latest successful invites.</p>
            </div>
-           <button className="text-[13px] font-bold text-[#047857] hover:text-green-800 transition-colors flex items-center gap-1 group">
+           <button className="text-[13px] font-bold text-[#047857] hover:text-green-800 transition-colors flex items-center gap-1 group self-start sm:self-auto">
              View all <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
            </button>
         </div>        <div className="space-y-4">

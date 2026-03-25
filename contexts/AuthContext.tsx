@@ -536,6 +536,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
+    const bootstrap = async () => {
+      try {
+        const {
+          data: { session },
+        } = await db.auth.getSession();
+
+        if (!mounted) return;
+        await hydrateSafely(session);
+      } catch (error) {
+        console.error('Failed to initialize app state:', error);
+        if (mounted) setIsLoading(false);
+      }
+    };
+
+    void bootstrap();
+
     return () => {
       mounted = false;
       listener?.subscription?.unsubscribe();
