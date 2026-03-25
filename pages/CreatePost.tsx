@@ -10,6 +10,7 @@ import StarterKit from '@tiptap/starter-kit';
 import ImageExtension from '@tiptap/extension-image';
 import LinkExtension from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
+import Youtube from '@tiptap/extension-youtube';
 import PublishSuccessModal from '../components/PublishSuccessModal';
 import { supabase } from '../src/integrations/supabase/client';
 import {
@@ -32,7 +33,8 @@ import {
   Heading2,
   Heading3,
   ImagePlus,
-  Loader2
+  Loader2,
+  Video
 } from 'lucide-react';
 
 (pdfjsLib as any).GlobalWorkerOptions.workerSrc = pdfWorker;
@@ -76,6 +78,7 @@ const CreatePost: React.FC = () => {
   const [editorMode, setEditorMode] = useState<'preview' | 'html'>('preview');
   const [isImporting, setIsImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
+  const [isAutoExcerpt, setIsAutoExcerpt] = useState(true);
 
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [showAiImagePrompt, setShowAiImagePrompt] = useState(false);
@@ -97,6 +100,7 @@ const CreatePost: React.FC = () => {
       StarterKit,
       ImageExtension,
       LinkExtension.configure({ openOnClick: false }),
+      Youtube.configure({ controls: false }),
       Placeholder.configure({ placeholder: 'Start writing your amazing article...' }),
     ],
     content: content || '',
@@ -121,9 +125,19 @@ const CreatePost: React.FC = () => {
         setCategory(post.category);
         setFeaturedImage(post.featuredImage);
         setIsStory(post.isStory || false);
+        if (post.excerpt) setIsAutoExcerpt(false);
       }
     }
   }, [id, posts, editor]);
+
+  useEffect(() => {
+    if (isAutoExcerpt && content) {
+      const plainText = htmlToPlainText(content);
+      if (plainText.trim() !== '') {
+         setExcerpt(plainText.slice(0, 160) + (plainText.length > 160 ? '...' : ''));
+      }
+    }
+  }, [content, isAutoExcerpt]);
 
   const handleDocumentUpload = async (file: File) => {
     setImportError(null);
@@ -348,8 +362,23 @@ const CreatePost: React.FC = () => {
               }
             }}
             className={`p-2.5 rounded-xl transition-all ${editor?.isActive('link') ? 'bg-slate-100 text-[#111827] shadow-inner' : 'text-slate-500 hover:text-[#111827] hover:bg-slate-50'}`}
+            title="Link"
           >
            <Code size={18} />
+          </button>
+          
+          <button 
+            type="button" 
+            onClick={() => {
+              const url = window.prompt('YouTube Video URL:');
+              if (url) {
+                editor?.chain().focus().setYoutubeVideo({ src: url }).run();
+              }
+            }}
+            className="p-2.5 rounded-xl transition-all text-slate-500 hover:text-[#111827] hover:bg-slate-50"
+            title="Embed YouTube Video"
+          >
+           <Video size={18} />
           </button>
 
           <div className="relative group">
@@ -493,10 +522,10 @@ const CreatePost: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Short Excerpt</label>
+                <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Short Excerpt (Auto-generated)</label>
                 <textarea
                   value={excerpt}
-                  onChange={(e) => setExcerpt(e.target.value)}
+                  onChange={(e) => { setExcerpt(e.target.value); setIsAutoExcerpt(false); }}
                   placeholder="Summary for search and discovery..."
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm text-[#111827] focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none h-24 resize-none placeholder:text-slate-400"
                 />
