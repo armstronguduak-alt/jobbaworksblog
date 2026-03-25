@@ -129,8 +129,8 @@ const Home: React.FC = () => {
           <main className="w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {paginatedPosts.map((post, index) => (
-                <div key={post.id} className={index === 0 && !activeCategory && !query ? "md:col-span-2 lg:col-span-2" : ""}>
-                   <PostCard post={post} variant={index === 0 && !activeCategory && !query ? "featured" : "standard"} />
+                <div key={post.id} className={page === 1 && index === 0 && !activeCategory && !query ? "md:col-span-2 lg:col-span-2" : ""}>
+                   <PostCard post={post} variant={page === 1 && index === 0 && !activeCategory && !query ? "featured" : "standard"} />
                 </div>
               ))}
             </div>
