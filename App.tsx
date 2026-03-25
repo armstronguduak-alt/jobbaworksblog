@@ -37,8 +37,6 @@ import AdminTasks from './pages/Admin/AdminTasks';
 import AdminRoute from './components/AdminRoute';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
-import AdsterraPopunder from './components/AdsterraPopunder';
-import AdsterraBanner from './components/AdsterraBanner';
 const Footer: React.FC = () => (
   <footer className="bg-[#f0fdf4] border-t border-emerald-100 py-10 mt-20 font-sans">
     <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -100,16 +98,7 @@ const Placeholder = ({ title }: { title: string }) => (
 const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
-      <AdsterraPopunder />
       <Navbar />
-      <Routes>
-        <Route path="/dashboard/*" element={null} />
-        <Route path="/admin/*" element={null} />
-        <Route path="/login" element={null} />
-        <Route path="/register" element={null} />
-        <Route path="/forgot-password" element={null} />
-        <Route path="*" element={<AdsterraBanner />} />
-      </Routes>
       <main className="flex-1">
         {children}
       </main>
