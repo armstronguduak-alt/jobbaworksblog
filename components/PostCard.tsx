@@ -24,7 +24,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, variant = 'standard' }) => {
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
         />
         {post.trending && (
-          <div className="absolute top-4 left-4 bg-[#047857] text-white px-3 py-1 text-[10px] font-bold rounded-full uppercase tracking-widest shadow-sm">
+          <div className="absolute top-4 left-4 bg-[#16A34A] text-white px-3 py-1 text-[10px] font-bold rounded-full uppercase tracking-widest shadow-sm">
             Featured
           </div>
         )}
@@ -32,7 +32,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, variant = 'standard' }) => {
       
       <div className="p-6 flex flex-col flex-1">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-[11px] font-bold text-[#047857] uppercase tracking-widest">
+          <span className="text-[11px] font-bold text-[#16A34A] uppercase tracking-widest">
             {post.category}
           </span>
           <span className="text-slate-300 font-bold text-[10px]">•</span>
@@ -60,7 +60,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, variant = 'standard' }) => {
              <div className="w-10"></div>
           )}
 
-          <button className="text-[#6B7280] hover:text-[#047857] hover:bg-green-50 p-2 rounded-full transition-colors w-10 h-10 flex items-center justify-center -mr-2">
+          <button className="text-[#6B7280] hover:text-[#16A34A] hover:bg-green-50 p-2 rounded-full transition-colors w-10 h-10 flex items-center justify-center -mr-2">
              <Bookmark size={20} className="stroke-[1.5]" />
           </button>
         </div>

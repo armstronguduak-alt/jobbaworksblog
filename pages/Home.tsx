@@ -74,7 +74,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FFFFFF] min-h-screen font-sans">
+    <div className="bg-[#F9FAFB] min-h-screen font-sans">
 
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12">
         {/* Search Bar */}
@@ -105,22 +105,22 @@ const Home: React.FC = () => {
             }}
             className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all ${
               !activeCategory
-                ? 'bg-[#047857] text-white'
-                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#16A34A] text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
             }`}
           >
             All
           </button>
           
-          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-slate-50 text-slate-600 hover:bg-slate-100`}>
+          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50 border border-slate-200`}>
             Trending
           </button>
           
-          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-slate-50 text-slate-600 hover:bg-slate-100`}>
+          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50 border border-slate-200`}>
             High Earnings
           </button>
           
-          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-slate-50 text-slate-600 hover:bg-slate-100`}>
+          <button className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50 border border-slate-200`}>
             Newest
           </button>
         </div>
@@ -149,7 +149,7 @@ const Home: React.FC = () => {
                 <button 
                   onClick={() => handlePageChange(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#047857] hover:text-white disabled:opacity-30 transition-all font-bold"
+                  className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-[#16A34A] hover:text-white disabled:opacity-30 transition-all font-bold"
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -159,10 +159,10 @@ const Home: React.FC = () => {
                     <button
                       key={p}
                       onClick={() => handlePageChange(p)}
-                      className={`w-10 h-10 rounded-full font-bold text-sm transition-all ${
+                      className={`w-10 h-10 rounded-full font-bold text-sm transition-all border border-slate-200 ${
                         page === p 
-                          ? 'bg-[#047857] text-white' 
-                          : 'text-slate-500 hover:bg-slate-100'
+                          ? 'bg-[#16A34A] text-white border-[#16A34A]' 
+                          : 'bg-white text-slate-500 hover:bg-slate-50'
                       }`}
                     >
                       {p}
@@ -173,7 +173,7 @@ const Home: React.FC = () => {
                 <button 
                   onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#047857] hover:text-white disabled:opacity-30 transition-all font-bold"
+                  className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-[#16A34A] hover:text-white disabled:opacity-30 transition-all font-bold"
                 >
                   <ChevronRight size={20} />
                 </button>

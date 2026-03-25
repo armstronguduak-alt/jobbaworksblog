@@ -137,13 +137,13 @@ const PostDetail: React.FC = () => {
   const progress = ((targetTime - timeLeft) / targetTime) * 100;
 
   return (
-    <div className="bg-white min-h-screen pb-20">
+    <div className="bg-[#F9FAFB] min-h-screen pb-20">
 
       {user && !hasReadingReward && !readingLimitReached && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4">
           <div className="bg-slate-900 rounded-2xl p-4 shadow-2xl text-white flex items-center gap-4 border border-white/10">
-            <div className="w-10 h-10 rounded-full border-2 border-emerald-500/30 flex items-center justify-center relative">
-              <Clock size={20} className="text-emerald-500" />
+            <div className="w-10 h-10 rounded-full border-2 border-[#16A34A]/30 flex items-center justify-center relative">
+              <Clock size={20} className="text-[#16A34A]" />
               <svg className="absolute inset-0 w-full h-full -rotate-90">
                 <circle
                   cx="20"
@@ -154,12 +154,12 @@ const PostDetail: React.FC = () => {
                   strokeWidth="2.5"
                   strokeDasharray="113"
                   strokeDashoffset={113 - (113 * progress) / 100}
-                  className="text-emerald-500"
+                  className="text-[#16A34A]"
                 />
               </svg>
             </div>
             <div className="flex-1">
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Reading to Earn</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#16A34A]">Reading to Earn</p>
               <p className="text-xs text-slate-300">{timeLeft > 0 ? `Active for ${timeLeft}s to unlock ₦${plan.readReward.toFixed(2)}` : 'Reward ready!'}</p>
             </div>
           </div>
@@ -168,7 +168,7 @@ const PostDetail: React.FC = () => {
 
       <div className="max-w-screen-md mx-auto px-4 pt-8 md:pt-12">
         <div className="flex items-center gap-4 mb-4">
-          <Link to={`/category/${post.category}`} className="text-xs font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600">
+          <Link to={`/category/${post.category}`} className="text-xs font-black text-slate-400 uppercase tracking-widest hover:text-[#16A34A]">
             {post.category}
           </Link>
           {post.isStory && (
@@ -190,7 +190,7 @@ const PostDetail: React.FC = () => {
         {post.isStory ? (
           <>
             <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-              <BookOpen className="text-emerald-600" size={24} /> {activeChapter?.title}
+              <BookOpen className="text-[#16A34A]" size={24} /> {activeChapter?.title}
             </h2>
             <div className="prose prose-slate prose-lg max-w-none serif-text leading-relaxed text-slate-800" dangerouslySetInnerHTML={{ __html: activeChapter?.content || '' }} />
           </>
@@ -212,14 +212,14 @@ const PostDetail: React.FC = () => {
 
             <div className="flex items-center gap-2">
               {post.chapters.map((_, i) => (
-                <div key={i} className={`w-2 h-2 rounded-full ${i === activeChapterIndex ? 'bg-emerald-600 scale-125' : 'bg-slate-200'}`}></div>
+                <div key={i} className={`w-2 h-2 rounded-full ${i === activeChapterIndex ? 'bg-[#16A34A] scale-125' : 'bg-slate-200'}`}></div>
               ))}
             </div>
 
             <button
               onClick={nextChapter}
               disabled={activeChapterIndex === post.chapters.length - 1}
-              className="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-black shadow-xl disabled:opacity-20 transition-all active:scale-95"
+              className="flex items-center gap-3 px-8 py-4 bg-[#16A34A] text-white rounded-2xl font-black uppercase tracking-widest hover:bg-green-700 shadow-xl disabled:opacity-20 transition-all active:scale-95"
             >
               Next <ChevronRight size={20} />
             </button>
@@ -227,15 +227,15 @@ const PostDetail: React.FC = () => {
         )}
 
         {post.isStory && activeChapterIndex === post.chapters.length - 1 && (
-          <div className="my-12 p-8 bg-emerald-600 rounded-[2.5rem] text-white text-center shadow-2xl shadow-emerald-100 relative overflow-hidden">
+          <div className="my-12 p-8 bg-[#16A34A] rounded-[2.5rem] text-white text-center shadow-2xl relative overflow-hidden">
             <div className="relative z-10">
               <Trophy size={48} className="mx-auto mb-4 text-amber-300" />
               <h3 className="text-2xl font-black mb-2">Knowledge Acquired</h3>
-              <p className="text-emerald-100 mb-6">
+              <p className="text-white/80 mb-6">
                 You've reached the end of this story. Engaging with our sponsored partners helps keep <span className="font-black">Jobba</span>
                 <span className="text-black font-black">Works</span> free and rewarding.
               </p>
-              <Link to="/" className="inline-block px-8 py-4 bg-white text-emerald-700 rounded-2xl font-black text-sm hover:bg-emerald-50 transition-all">
+              <Link to="/" className="inline-block px-8 py-4 bg-white text-[#16A34A] rounded-2xl font-black text-sm hover:bg-slate-50 transition-all">
                 Discover More
               </Link>
             </div>
@@ -247,7 +247,7 @@ const PostDetail: React.FC = () => {
             <div className="flex flex-wrap items-center gap-3">
               <h3 className="text-2xl font-black text-slate-900">Discussion</h3>
               {hasReadingReward && (
-                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#16A34A] bg-[#DCFCE7] px-3 py-1.5 rounded-full">
                   <CheckCircle2 size={14} /> Earnings claimed from this post
                 </div>
               )}
